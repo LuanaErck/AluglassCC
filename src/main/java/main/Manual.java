@@ -67,7 +67,7 @@ public class Manual
 
     private void armarContenidoDetallado() 
     {
-        // SECCIÓN 1: LOGIN
+        // SECCIÓN 1: LOGIN (Esta está perfecta)
         contenedorSecciones.getChildren().add(crearSeccion(
             "1. Acceso al Sistema (Login)",
             "Para ingresar a Aluglass, siga estos pasos:\n\n" +
@@ -77,20 +77,21 @@ public class Manual
             "CAPTURA_LOGIN.png" 
         ));
 
-        // SECCIÓN 2: RECUPERACIÓN DE CONTRASEÑA
+        // SECCIÓN 2: RECUPERACIÓN DE CONTRASEÑA (CORREGIDA: Se quitó el texto del parámetro de imagen)
         contenedorSecciones.getChildren().add(crearSeccion(
             "2. Recuperación de Contraseña",
             "En caso de olvido de credenciales, el sistema cuenta con un asistente de recuperación:\n\n" +
             "• **Paso 1: Identificación**\n" +
             "Haga clic en **[¿Olvidó su contraseña?]** e ingrese su nombre de usuario.\n" +
             "[IMG:CAPTURA_OLVIDO.png]\n\n" +
-            "• **Paso 2: Validación de Identidad**\n" +
+            "• **Paso 2: Validation de Identidad**\n" +
             "Responda a su pregunta de seguridad preconfigurada. La respuesta debe ser exacta.\n" +
             "[IMG:CAPTURA_PREGUNTA.png]\n\n" +
             "• **Paso 3: Restablecimiento**\n" +
             "Una vez validado, el sistema le permitirá ingresar y confirmar su nueva clave de acceso.\n" +
-            "[IMG:CAPTURA_NUEVA_CONTRASEÑA.png]",
-            "Al finalizar, será redirigido automáticamente a la pantalla de inicio para ingresar con sus nuevos datos."
+            "[IMG:CAPTURA_NUEVA_CONTRASEÑA.png]\n\n" +
+            "Al finalizar, será redirigido automáticamente a la pantalla de inicio para ingresar con sus nuevos datos.",
+            "" // Se deja vacío porque las imágenes ya se cargan de forma intermedia con [IMG:]
         ));
 
         // SECCIÓN 3: MENÚ PRINCIPAL
@@ -130,7 +131,7 @@ public class Manual
             ""
         ));
 
-        // SECCIÓN 5: CUENTAS CORRIENTES
+        // SECCIÓN 5: CUENTAS CORRIENTES (CORREGIDA: Se movió la imagen al texto intermedio)
         contenedorSecciones.getChildren().add(crearSeccion(
             "5. Gestión de Cuentas Corrientes",
             "Centraliza el control de deudas y saldos de los clientes de la vidriería.\n\n" +
@@ -142,11 +143,12 @@ public class Manual
             "Filtra automáticamente la lista para mostrar únicamente a los clientes que presentan deudas activas.\n" +
             "[IMG:CAPTURA_LISTADO_MOROSOS.png]\n\n" +
             "**C. Historial Detallado:**\n" +
-            "Al presionar **[VER HISTORIAL]**, se visualiza la ficha técnica con el detalle cronológico de todos los presupuestos y pagos del cliente.\n",
-            "[IMG:CAPTURA_FICHA_TECNICA_CUENTA.png]"
+            "Al presionar **[VER HISTORIAL]**, se visualiza la ficha técnica con el detalle cronológico de todos los presupuestos y pagos del cliente.\n\n" +
+            "[IMG:CAPTURA_FICHA_TECNICA_CUENTA.png]",
+            ""
         ));
 
-        // SECCIÓN 6: GESTIÓN DE PRESUPUESTOS
+        // SECCIÓN 6: GESTIÓN DE PRESUPUESTOS (CORREGIDA: Se movió la imagen final al texto de arriba)
         contenedorSecciones.getChildren().add(crearSeccion(
             "6. Gestión de Presupuestos",
             "Módulo destinado a la creación y seguimiento de presupuestos por trabajos de carpintería.\n\n" +
@@ -161,8 +163,9 @@ public class Manual
             "Podrá modificar presupuestos siempre y cuando no tengan pagos registrados vinculados.\n" +
             "[IMG:CAPTURA_EDICION_PRESUPUESTO.png]\n\n" +
             "**D. Detalles y Comprobantes:**\n" +
-            "Desde el botón **[DETALLE]**, podrá ver la información técnica y descargar el **PDF** de los recibos asociados.",
-            "[IMG:CAPTURA_VISOR_PDF.png]"
+            "Desde el botón **[DETALLE]**, podrá ver la información técnica y descargar el **PDF** de los recibos asociados.\n\n" +
+            "[IMG:CAPTURA_VISOR_PDF.png]",
+            ""
         ));
 
         // SECCIÓN 7: PAGOS Y COMPROBANTES
@@ -184,7 +187,7 @@ public class Manual
             ""
         ));
 
-        // SECCIÓN 8: ESTADÍSTICAS
+        // SECCIÓN 8: ESTADÍSTICAS (CORREGIDA: Se unificó el parámetro de la imagen)
         contenedorSecciones.getChildren().add(crearSeccion(
             "8. Análisis y Estadísticas",
             "Herramienta de análisis para la toma de decisiones financieras.\n\n" +
@@ -192,21 +195,23 @@ public class Manual
             "Visualice el total acumulado histórico y el desglose de ingresos del mes actual para controlar el flujo de caja.\n" +
             "[IMG:CAPTURA_PANEL_ESTADISTICAS.png]\n\n" +
             "**B. Reporte de Morosidad:**\n" +
-            "Genera una lista de clientes con deudas críticas (aquellas con más de 30 días de antigüedad).",
-            "CAPTURA_REPORTE_MOROSIDAD.png"
+            "Genera una lista de clientes con deudas críticas (aquellas con más de 30 días de antigüedad).\n\n" +
+            "[IMG:CAPTURA_REPORTE_MOROSIDAD.png]",
+            ""
         ));
 
-        // SECCIÓN 9: SEGURIDAD DEL PERFIL
+        // SECCIÓN 9: SEGURIDAD DEL PERFIL (CORREGIDA: Se pasó la última imagen al cuerpo del texto)
         contenedorSecciones.getChildren().add(crearSeccion(
             "9. Perfil de Usuario y Seguridad",
             "Ajustes de la cuenta de usuario activa:\n\n" +
             "• **Cambio de Credenciales**: Actualice su contraseña periódicamente.\n" +
-            "• **Pregunta de Seguridad**: Configure o edite su pregunta y respuesta secreta para asegurar la recuperación de su cuenta.\n" +
-            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]",
-            "[IMG:CAPTURA_EDITAR_PREGUNTA_SEGURIDAD.png]"
+            "• **Pregunta de Seguridad**: Configure o edite su pregunta y respuesta secreta para asegurar la recuperación de su cuenta.\n\n" +
+            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]\n\n" +
+            "[IMG:CAPTURA_EDITAR_PREGUNTA_SEGURIDAD.png]",
+            ""
         ));
 
-        // SECCIÓN 10: CIERRE DE SESIÓN
+        // SECCIÓN 10: CIERRE DE SESIÓN (CORREGIDA: Se unificó la imagen de pie de página)
         contenedorSecciones.getChildren().add(crearSeccion(
             "10. Salida Segura",
             "Para finalizar su jornada de trabajo, utilice siempre el botón **[CERRAR SESIÓN]**.\n\n" +
