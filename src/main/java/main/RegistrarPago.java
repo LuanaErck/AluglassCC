@@ -85,6 +85,11 @@ public class RegistrarPago extends VBox
         txtMonto.setPromptText("0.00");
         txtMonto.getStyleClass().add("input-login");
 
+        Label lblFecha = new Label("Fecha:");
+        lblFecha.setStyle(estiloLabel);
+        DatePicker fechaPago = new DatePicker(java.time.LocalDate.now());
+        fechaPago.setPrefWidth(200);
+
         // MONEDA
         Label lblMon = new Label("Moneda:");
         lblMon.setStyle(estiloLabel);
@@ -92,6 +97,7 @@ public class RegistrarPago extends VBox
         comboMoneda.getItems().addAll("Pesos", "Dolares");
         comboMoneda.setValue("Pesos");
         comboMoneda.setStyle(estiloCombo);
+        comboMoneda.setPrefWidth(250);
 
         // COTIZACIÓN
         Label lblCot = new Label("Cotización USD:");
@@ -114,7 +120,7 @@ public class RegistrarPago extends VBox
         ComboBox<String> comboForma = new ComboBox<>();
         comboForma.getItems().addAll("Efectivo", "Transferencia", "Cheque");
         comboForma.setValue("Efectivo");
-        comboForma.setPrefWidth(200);
+        comboForma.setPrefWidth(250);
         comboForma.setStyle(estiloCombo);
 
         // OBSERVACIONES
@@ -126,11 +132,12 @@ public class RegistrarPago extends VBox
 
         grid.add(lblC, 0, 0);       grid.add(hbCliente, 1, 0);
         grid.add(lblP, 0, 1);       grid.add(hbPresupuesto, 1, 1);
-        grid.add(lblM, 0, 2);       grid.add(txtMonto, 1, 2);
-        grid.add(lblMon, 0, 3);     grid.add(comboMoneda, 1, 3);
-        grid.add(lblCot, 0, 4);     grid.add(txtCotizacion, 1, 4);
-        grid.add(lblF, 0, 5);       grid.add(comboForma, 1, 5);
-        grid.add(lblO, 0, 6);       grid.add(txtObs, 1, 6);
+        grid.add(lblFecha, 0, 2);   grid.add(fechaPago, 1, 2);
+        grid.add(lblM, 0, 3);       grid.add(txtMonto, 1, 3);
+        grid.add(lblMon, 0, 4);     grid.add(comboMoneda, 1, 4);
+        grid.add(lblCot, 0, 5);     grid.add(txtCotizacion, 1, 5);
+        grid.add(lblF, 0, 6);       grid.add(comboForma, 1, 6);
+        grid.add(lblO, 0, 7);       grid.add(txtObs, 1, 7);
 
         Button btnGuardar = new Button("REGISTRAR PAGO Y GENERAR RECIBO");
         btnGuardar.getStyleClass().add("boton-editar-tabla");
@@ -146,73 +153,75 @@ public class RegistrarPago extends VBox
             String forma = comboForma.getValue();
             String obs = txtObs.getText().trim();
 
-            if (cliente == null || presupuesto == null) 
+            boolean esValido = true;
+            double monto = 0;
+            double cotizacion = 1;
+            double importePesos = 0;
+
+            if (cliente == null || presupuesto == null || fechaPago.getValue() == null) 
             {
                 mostrarMensaje("❌ Seleccione cliente y presupuesto", true);
-                return;
+                esValido = false;
             }
-            if (Validadores.estaVacio(montoTexto) || !Validadores.esNumero(montoTexto)) 
+            else if (Validadores.estaVacio(montoTexto) || !Validadores.esNumero(montoTexto)) 
             {
                 mostrarMensaje("❌ Ingrese un monto numérico válido", true);
-                return;
+                esValido = false;
             }
-
-            double monto = Double.parseDouble(montoTexto);
-            if (!Validadores.esMayorACero(monto)) 
+            else
             {
-                mostrarMensaje("❌ El monto debe ser mayor a 0", true);
-                return;
+                monto = Double.parseDouble(montoTexto);
+                if (!Validadores.esMayorACero(monto)) 
+                {
+                    mostrarMensaje("❌ El monto debe ser mayor a 0", true);
+                    esValido = false;
+                }
             }
 
-            double cotizacion = 1;
-            double importePesos = monto;
-
-            if (moneda.equals("Dolares")) 
+            if (esValido && moneda.equals("Dolares")) 
             {
                 if (Validadores.estaVacio(cotizacionTexto) || !Validadores.esNumero(cotizacionTexto)) 
                 {
                     mostrarMensaje("❌ Ingrese una cotización válida", true);
-                    return;
+                    esValido = false;
                 }
-                cotizacion = Double.parseDouble(cotizacionTexto);
+                else
+                {
+                    cotizacion = Double.parseDouble(cotizacionTexto);
+                }
+            }
+
+            if (esValido) 
+            {
                 importePesos = monto * cotizacion;
+                if (importePesos > presupuesto.getSaldoPresupuesto()) 
+                {
+                    mostrarMensaje("❌ El pago supera el saldo del presupuesto", true);
+                    esValido = false;
+                }
             }
 
-            if (importePesos > presupuesto.getSaldoPresupuesto()) 
+            if (esValido) 
             {
-                mostrarMensaje("❌ El pago supera el saldo del presupuesto", true);
-                return;
+                BasePago base = new BasePago();
+                String rutaPdf = base.registrarPago(presupuesto.getIdPresupuesto(), monto, moneda,
+                        cotizacion, importePesos, forma, obs, fechaPago.getValue().toString());
+
+                Alert alertPdf = new Alert(Alert.AlertType.CONFIRMATION);
+                alertPdf.setTitle("Éxito");
+                alertPdf.setHeaderText("Pago registrado correctamente");
+                alertPdf.setContentText("¿Desea abrir el recibo en PDF?");
+                ButtonType btnSi = new ButtonType("Sí, abrir");
+                ButtonType btnNo = new ButtonType("No, volver");
+                alertPdf.getButtonTypes().setAll(btnSi, btnNo);
+
+                var res = alertPdf.showAndWait();
+                if (res.isPresent() && res.get() == btnSi) 
+                {
+                    abrirArchivoPDF(rutaPdf);
+                }
+                rootPrincipal.setCenter(new ListaPagos(rootPrincipal));
             }
-
-            BasePago base = new BasePago();
-            String rutaPdf = base.registrarPago(
-                    cliente.getIdCliente(),
-                    cliente.getNombre(),
-                    presupuesto.getIdPresupuesto(),
-                    monto,
-                    moneda,
-                    cotizacion,
-                    importePesos,
-                    forma,
-                    obs
-            );
-
-            Alert alertPdf = new Alert(Alert.AlertType.CONFIRMATION);
-            alertPdf.setTitle("Éxito");
-            alertPdf.setHeaderText("Pago registrado correctamente");
-            alertPdf.setContentText("¿Desea abrir el recibo en PDF?");
-            
-            ButtonType btnSi = new ButtonType("Sí, abrir");
-            ButtonType btnNo = new ButtonType("No, volver");
-            alertPdf.getButtonTypes().setAll(btnSi, btnNo);
-
-            var res = alertPdf.showAndWait();
-            if (res.isPresent() && res.get() == btnSi) 
-            {
-                abrirArchivoPDF(rutaPdf);
-            }
-
-            rootPrincipal.setCenter(new ListaPagos(rootPrincipal));
         });
 
         this.getChildren().addAll(lblTitulo, new Separator(), grid, btnGuardar, lblMensaje);
@@ -287,42 +296,34 @@ public class RegistrarPago extends VBox
         if (clienteActual == null) 
         {
             mostrarMensaje("⚠️ Primero debe seleccionar un cliente", true);
-            return;
         }
-
-        Stage stage = new Stage();
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.setTitle("Aluglass - Nuevo Presupuesto para " + clienteActual.getNombre());
-
-        // Inyección: Pasamos el cliente seleccionado
-        RegistrarPresupuesto layout = new RegistrarPresupuesto(stage, clienteActual);
-        Scene scene = new Scene(layout);
-        try 
-        { 
-            scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm()); 
-        } 
-        catch (Exception e) {}
-
-        stage.setScene(scene);
-
-        // El código se detiene aca hasta que el usuario cierra la ventana de presupuesto
-        stage.showAndWait();
-
-        // 1. Refrescamos la lista desde la base de datos para que aparezca el nuevo
-        actualizarComboPresupuestos();
-
-        // 2. Si se creó un presupuesto, lo buscamos y lo seleccionamos automáticamente
-        if (layout.getPresupuestoCreado() != null) 
+        else
         {
-            String descNueva = layout.getPresupuestoCreado().getDescripcion();
+            Stage stage = new Stage();
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.setTitle("Aluglass - Nuevo Presupuesto para " + clienteActual.getNombre());
+            RegistrarPresupuesto layout = new RegistrarPresupuesto(stage, clienteActual);
+            Scene scene = new Scene(layout);
+            try 
+            { 
+                scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm()); 
+            } 
+            catch (Exception e) {}
 
-            for (Presupuesto p : comboPresupuestos.getItems()) 
+            stage.setScene(scene);
+            stage.showAndWait();
+            actualizarComboPresupuestos();
+
+            if (layout.getPresupuestoCreado() != null) 
             {
-                // Comparamos por descripción para encontrar el registro real con su ID de la DB
-                if (p.getDescripcion().equals(descNueva)) 
+                String descNueva = layout.getPresupuestoCreado().getDescripcion();
+                for (Presupuesto p : comboPresupuestos.getItems()) 
                 {
-                    comboPresupuestos.setValue(p);
-                    break;
+                    if (p.getDescripcion().equals(descNueva)) 
+                    {
+                        comboPresupuestos.setValue(p);
+                        break;
+                    }
                 }
             }
         }

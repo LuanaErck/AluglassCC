@@ -1,27 +1,20 @@
 package clases;
 
-public class Presupuesto
+public class Presupuesto extends DocumentoComercial
 {
     private int idPresupuesto;
     private int idCliente;
-    private String fecha;
-    private String descripcion;
-    private double total;
     private double saldoPresupuesto;
-    private String estado;
     private String nombreCliente;
 
     public Presupuesto(int idPresupuesto, int idCliente, String fecha,
                        String descripcion, double total,
                        double saldoPresupuesto, String estado)
     {
+        super(fecha, descripcion, total, estado);
         this.idPresupuesto = idPresupuesto;
         this.idCliente = idCliente;
-        this.fecha = fecha;
-        this.descripcion = descripcion;
-        this.total = total;
         this.saldoPresupuesto = saldoPresupuesto;
-        this.estado = estado;
     }
 
     public int getIdPresupuesto()
@@ -36,17 +29,17 @@ public class Presupuesto
 
     public String getFecha()
     {
-        return fecha;
+        return super.getFecha();
     }
 
     public String getDescripcion()
     {
-        return descripcion;
+        return getDetalle();
     }
 
     public double getTotal()
     {
-        return total;
+        return getImporte();
     }
 
     public double getSaldoPresupuesto()
@@ -54,11 +47,6 @@ public class Presupuesto
         return saldoPresupuesto;
     }
 
-    public String getEstado()
-    {
-        return estado;
-    }
-    
     public String getNombreCliente()
     {
         return nombreCliente;
@@ -71,8 +59,9 @@ public class Presupuesto
 
     //Para mostrar en ComboBox
     @Override
-    public String toString() {
+    public String toString() 
+    {
         //Esto es lo que aparecerá en la lista desplegable
-        return "ID: " + idPresupuesto + " - " + descripcion + " (Saldo: $" + saldoPresupuesto + ")";
+        return "ID: " + idPresupuesto + " - " + getDetalle() + " (Saldo: $" + saldoPresupuesto + ")";
     }
 }

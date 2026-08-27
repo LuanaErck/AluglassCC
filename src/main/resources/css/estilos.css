@@ -1,10 +1,12 @@
-/* GLOBAL Y FONDO */
+/* =========================================================
+   1. GLOBAL Y FONDO
+   ========================================================= */
 .root 
 {
     -fx-background-color: #FFFFFF; /* Blanco puro en toda la aplicación */
 }
 
-#fondo-login, #menu-lateral, .stack-pane 
+#fondo-login, #menu-lateral, .stack-pane
 {
     -fx-background-color: #FFFFFF;
 }
@@ -12,17 +14,19 @@
 /* LOGO Y ESPACIADO */
 #contenedor-logo 
 {
-    -fx-padding: 30 10 40 10; 
+    -fx-padding: 30 10 40 10;
 }
 
-/*DIFERENCIACIÓN IZQUIERDA/DERECHA*/
+/* DIFERENCIACIÓN IZQUIERDA/DERECHA */
 #menu-lateral 
 {
-    -fx-border-color: transparent #E0E0E0 transparent transparent; 
+    -fx-border-color: transparent #E0E0E0 transparent transparent;
     -fx-border-width: 0 1 0 0;
 }
 
-/* INPUTS LOGIN */
+/* =========================================================
+   2. INPUTS Y BOTONES DE LOGIN
+   ========================================================= */
 .input-login 
 {
     -fx-pref-height: 45px;
@@ -32,18 +36,18 @@
     -fx-border-color: #D1D1D1;
     -fx-border-radius: 8;
     -fx-background-radius: 8;
-    -fx-padding: 0 10 0 15; 
+    -fx-padding: 0 10 0 15;
 }
 
-.input-login:focused 
+.input-login:focused
 {
-    -fx-border-color: #800000; /* Bordo Aluglass */
+    -fx-border-color: #800000; /* Bordó Aluglass */
 }
 
 #boton-ingresar 
 {
-    -fx-background-color: #E0E0E0; 
-    -fx-text-fill: #333333; 
+    -fx-background-color: #E0E0E0;
+    -fx-text-fill: #333333;
     -fx-pref-height: 50px;
     -fx-min-width: 280px;
     -fx-font-weight: bold;
@@ -53,11 +57,13 @@
 
 #boton-ingresar:hover 
 {
-    -fx-background-color: #BDBDBD; 
+    -fx-background-color: #BDBDBD;
 }
 
-/*ESTILO DE LAS SECCIONES (BLOQUES GRISES)*/
-.seccion-menu 
+/* =========================================================
+   3. ESTILO DE LAS SECCIONES PRINCIPALES (BLOQUES GRISES DEL MENÚ)
+   ========================================================= */
+.seccion-menu
 {
     -fx-background-color: transparent;
     -fx-border-color: #E0E0E0;      /* Borde sutil para cada bloque */
@@ -66,11 +72,11 @@
     -fx-background-radius: 5;
     /* Separación entre bloques: 8px arriba/abajo, 15px a los lados */
     -fx-padding: 0;
-    -fx-margin: 8 15 8 15; 
+    -fx-margin: 8 15 8 15;
 }
 
-/* Encabezado de la sección (CLIENTES, PAGOS, etc.) */
-.seccion-menu > .title 
+/* Encabezado de la sección (CLIENTES, PROVEEDORES, etc.) */
+.seccion-menu > .title
 {
     -fx-background-color: #F5F5F5;  /* Fondo gris claro para diferenciar */
     -fx-background-radius: 5 5 0 0;
@@ -90,34 +96,94 @@
 /* Cuando la pestaña está abierta */
 .seccion-menu:expanded > .title 
 {
-    -fx-background-color: #A9A9A9;  /* Fondo blanco al abrir para resaltar opciones */
+    -fx-background-color: #A9A9A9;  /* Fondo resaltado al abrir */
     -fx-border-color: transparent transparent #E0E0E0 transparent; /* Línea divisoria interna */
 }
 
 /*SUB-BOTONES (DENTRO DE LAS SECCIONES)*/
-
 .seccion-menu .content 
 {
     -fx-background-color: #FFFFFF;  /* Fondo interno blanco */
     -fx-padding: 10 0 10 0;
 }
 
+/* =========================================================
+   4. SUB-BOTONES (ACCIONES FINALES DEL MENÚ)
+   ========================================================= */
 .sub-boton-menu 
 {
-    -fx-background-color: transparent;
-    -fx-text-fill: #555555;
-    -fx-font-size: 15px;
-    -fx-padding: 10 15 10 45;       /* Sangría hacia la derecha para sub-opciones */
+    -fx-background-color: #f8f9fa;
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-padding: 8px 12px;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
     -fx-cursor: hand;
 }
 
+/* Efecto al pasar el cursor (Hover) */
 .sub-boton-menu:hover 
 {
-    -fx-background-color: #F9F9F9;
-    -fx-text-fill: #800000;         /* Color bordo corporativo */
+    -fx-background-color: #e2e8f0;
+    -fx-border-color: #94a3b8;
+    -fx-text-fill: #0f172a;
 }
 
-/*BOTÓN CERRAR SESIÓN*/
+/* Efecto al presionar (Pressed) */
+.sub-boton-menu:pressed 
+{
+    -fx-background-color: #cbd5e1;
+    -fx-border-color: #64748b;
+}
+
+/* =========================================================
+   5. SUBCATEGORÍAS DESPLEGABLES (ej: "Gestión de clientes")
+   ========================================================= */
+.sub-categoria-pane 
+{
+    -fx-background-color: transparent;
+    -fx-box-border: transparent;
+    -fx-padding: 2px 0px;
+}
+
+/* Formato para el cabezal del desplegable secundario */
+.sub-categoria-pane > .title 
+{
+    -fx-background-color: #f8f9fa;
+    -fx-border-color: #cbd5e1;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 8px 12px;
+    -fx-cursor: hand;
+}
+
+.sub-categoria-pane > .title:hover 
+{
+    -fx-background-color: #e2e8f0;
+    -fx-border-color: #94a3b8;
+}
+
+/* Texto dentro del cabezal de la subcategoría */
+.sub-categoria-pane > .title > .text 
+{
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-fill: #2c3e50;
+}
+
+.sub-categoria-pane .content 
+{
+    -fx-background-color: transparent;
+    -fx-padding: 5px 0px 5px 10px;
+}
+
+/* =========================================================
+   6. BOTÓN CERRAR SESIÓN
+   ========================================================= */
 #boton-salir 
 {
     -fx-background-color: #E0E0E0;
@@ -132,11 +198,13 @@
 
 #boton-salir:hover 
 {
-    -fx-background-color: #800000; /* Se vuelve bordo al salir */
+    -fx-background-color: #800000; /* Se vuelve bordó al salir */
     -fx-text-fill: #FFFFFF;
 }
 
-/* Estilo para los títulos de cada pantalla */
+/* =========================================================
+   7. CONTENEDORES Y TÍTULOS DE PANTALLA
+   ========================================================= */
 .titulo-pantalla 
 {
     -fx-font-size: 24px;
@@ -152,17 +220,49 @@
     -fx-spacing: 20;
 }
 
-/* Estilo para las tablas */
+/* =========================================================
+   8. TABLAS (TABLEVIEW)
+   ========================================================= */
 .table-view 
 {
     -fx-background-color: transparent;
-    -fx-border-color: #E0E0E0;
+    -fx-border-color: #d0d0d0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 5;
     -fx-font-size: 16px;
 }
 
+/* Divisores en los nombres de las columnas */
 .table-view .column-header 
 {
-    -fx-background-color: #F5F5F5;
+    -fx-border-color: transparent #d0d0d0 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-background-color: #f4f4f4;
+}
+
+.table-view .column-header:last-visible 
+{
+    -fx-border-color: transparent;
+}
+
+/* Divisores verticales entre celdas de datos */
+.table-view .table-cell
+{
+    -fx-border-color: transparent #e8e8e8 transparent transparent;
+    -fx-border-width: 0 1 0 0;
+    -fx-padding: 8 5 8 5;
+}
+
+/* Resaltar la fila al pasar el mouse */
+.table-row-cell:hover 
+{
+    -fx-background-color: #f9f2f2; /* Tono rojizo suave acorde a Aluglass */
+}
+
+/* Quitar el borde azul enfocado */
+.table-view:focused 
+{
+    -fx-background-color: transparent;
 }
 
 /* Botón de acción dentro de la tabla */
@@ -173,26 +273,27 @@
     -fx-cursor: hand;
     -fx-padding: 2 10 2 10;
     -fx-font-size: 16px;
-    -fx-transition: 0.3s; /* Esto hace que el cambio de color sea suave */
+    -fx-transition: 0.3s;
 }
 
 /* Estado cuando el mouse está encima */
 .boton-editar-tabla:hover 
 {
-    -fx-background-color: #800000; /* Cambia a bordó Aluglass al pasar el mouse */
-    /* O si prefieres un gris más oscuro, usa: #8a828a */
+    -fx-background-color: #800000;
 }
 
 /* Estado cuando haces clic (opcional, para dar más feedback) */
-.boton-editar-tabla:pressed
+.boton-editar-tabla:pressed 
 {
-    -fx-background-color: #5a0000; 
-    -fx-scale-x: 0.95; /* Se achica un poquito al presionar */
+    -fx-background-color: #5a0000;
+    -fx-scale-x: 0.95;
     -fx-scale-y: 0.95;
 }
 
-/* Estilo para los formularios */
-.label-formulario 
+/* =========================================================
+   9. FORMULARIOS Y PAGINACIÓN
+   ========================================================= */
+.label-formulario
 {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
@@ -244,12 +345,12 @@
 /* El contenedor de los botones */
 .pagination .control-box 
 {
-    -fx-spacing: 10; /* Espacio entre los numeritos */
+    -fx-spacing: 10;
     -fx-padding: 10;
 }
 
 /* Los botones de números y flechas */
-.pagination .control-box .button, 
+.pagination .control-box .button,
 .pagination .control-box .toggle-button 
 {
     -fx-min-width: 30px;
@@ -262,20 +363,22 @@
 /* El botón de la página seleccionada actualmente */
 .pagination .control-box .toggle-button:selected 
 {
-    -fx-background-color: #1a73e8; /* Un azul profesional */
+    -fx-background-color: #1a73e8;
     -fx-text-fill: white;
     -fx-font-weight: bold;
 }
 
 /* Efecto al pasar el mouse por encima */
 .pagination .control-box .button:hover,
-.pagination .control-box .toggle-button:hover 
+.pagination .control-box .toggle-button:hover
 {
     -fx-background-color: #e1e4e8;
 }
 
-/* Estilos para Mi Perfil */
-.titulo-perfil
+/* =========================================================
+   10. PERFIL DE USUARIO
+   ========================================================= */
+.titulo-perfil 
 {
     -fx-font-size: 30px;
     -fx-font-weight: bold;
@@ -285,15 +388,12 @@
 .input-perfil 
 {
     /* Para que no vaya de punta a punta */
-    -fx-pref-width: 350px; 
-    -fx-max-width: 350px;  
-    
+    -fx-pref-width: 350px;
+    -fx-max-width: 350px;
     /* Para que sea más alto */
-    -fx-pref-height: 40px; 
-    
+    -fx-pref-height: 40px;
     /* Aleja el texto de los bordes del input */
-    -fx-padding: 0 15 0 15; 
-    
+    -fx-padding: 0 15 0 15;
     -fx-background-radius: 7;
     -fx-border-color: #ccc;
     -fx-border-radius: 7;
@@ -305,7 +405,7 @@
     -fx-font-size: 14px;
     -fx-text-fill: #555;
     -fx-font-weight: bold;
-    -fx-margin: 0 0 5 0; /* Un poco de margen abajo */
+    -fx-margin: 0 0 5 0;
 }
 
 .boton-guardar-perfil 
@@ -322,7 +422,9 @@
     -fx-background-color: #1976D2;
 }
 
-/* Tarjetas de Reportes */
+/* =========================================================
+   11. REPORTES Y MANUAL
+   ========================================================= */
 .card-reporte 
 {
     -fx-background-color: white;
@@ -341,7 +443,7 @@
     -fx-font-weight: bold;
 }
 
-.card-valor 
+.card-valor
 {
     -fx-font-size: 24px;
     -fx-font-weight: bold;
@@ -369,7 +471,7 @@
     -fx-padding: 40;
 }
 
-.manual-texto 
+.manual-texto
 {
     -fx-font-size: 15px;
     -fx-text-fill: #444;

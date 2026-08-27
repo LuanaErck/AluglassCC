@@ -34,6 +34,10 @@ public class ModificarCliente extends VBox
         TextField txtTelefono = new TextField(cliente.getTelefono());
         txtTelefono.getStyleClass().add("input-login");
         txtTelefono.setPromptText("Solo números");
+        
+        TextField txtCuit = new TextField(cliente.getCuit());
+        txtCuit.getStyleClass().add("input-login");
+        txtCuit.setPromptText("Solo números, sin guiones");
 
         Label lblEstado = new Label("Estado:");
         lblEstado.getStyleClass().add("label-formulario");
@@ -51,14 +55,19 @@ public class ModificarCliente extends VBox
 
         Label lblTelefono = new Label("Teléfono:");
         lblTelefono.getStyleClass().add("label-formulario");
+        
+        Label lblCuit = new Label("Cuit:");
+        lblCuit.getStyleClass().add("label-formulario");
 
         // Agregamos al Grid
         grid.add(lblNombre, 0, 0);
         grid.add(txtNombre, 1, 0);
         grid.add(lblTelefono, 0, 1);
         grid.add(txtTelefono, 1, 1);
-        grid.add(lblEstado, 0, 2);   // Fila 2, Columna 0
-        grid.add(comboEstado, 1, 2); // Fila 2, Columna 1
+        grid.add(lblCuit, 0, 2);
+        grid.add(txtCuit, 1, 2);
+        grid.add(lblEstado, 0, 3);   // Fila 2, Columna 0
+        grid.add(comboEstado, 1, 3); // Fila 2, Columna 1
 
         // BOTONES
         Button btnGuardar = new Button("GUARDAR CAMBIOS");
@@ -72,28 +81,30 @@ public class ModificarCliente extends VBox
         {
             String nombre = txtNombre.getText().trim();
             String telefono = txtTelefono.getText().trim();
+            String cuit = txtCuit.getText().trim();
             String estado = comboEstado.getValue(); // Obtenemos el nuevo estado
 
             if (Validadores.estaVacio(nombre)) 
             {
                 new Alert(Alert.AlertType.WARNING, "El nombre es obligatorio").showAndWait();
-                return;
             }
-
-            // Actualizamos el objeto cliente
-            cliente.setNombre(nombre);
-            cliente.setTelefono(telefono);
-            cliente.setEstado(estado); 
-
-            BaseCliente base = new BaseCliente();
-            if (base.modificarCliente(cliente)) 
+            else
             {
-                new Alert(Alert.AlertType.INFORMATION, "Cliente actualizado con éxito").showAndWait();
-                rootPrincipal.setCenter(new ListadoClientes(rootPrincipal));
-            } 
-            else 
-            {
-                new Alert(Alert.AlertType.ERROR, "Error al actualizar en la base de datos").showAndWait();
+                cliente.setNombre(nombre);
+                cliente.setTelefono(telefono);
+                cliente.setCuit(cuit);
+                cliente.setEstado(estado); 
+
+                BaseCliente base = new BaseCliente();
+                if (base.modificarCliente(cliente)) 
+                {
+                    new Alert(Alert.AlertType.INFORMATION, "Cliente actualizado con éxito").showAndWait();
+                    rootPrincipal.setCenter(new ListadoClientes(rootPrincipal));
+                } 
+                else 
+                {
+                    new Alert(Alert.AlertType.ERROR, "Error al actualizar en la base de datos").showAndWait();
+                }
             }
         });
 

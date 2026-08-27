@@ -10,7 +10,7 @@ import java.util.List;
 public class BaseCuenta
 {
 
-    // LISTAR CUENTAS CORRIENTES CON SALDO REAL
+    // LISTAR CUENTAS CORRIENTES  DE CLIENTES CON SALDO REAL
     public List<CuentaCorriente> listarCuentas()
     {
         List<CuentaCorriente> lista = new ArrayList<>();
@@ -76,10 +76,9 @@ public class BaseCuenta
         return 0;
     }
     
-    //OBTENER CUENTAS ATRASADAS
+    // OBTENER CUENTAS ATRASADAS
     public List<CuentaCorriente> listarCuentasAtrasadas()
     {
-
         List<CuentaCorriente> lista = new ArrayList<>();
 
         String sql = """
@@ -96,37 +95,36 @@ public class BaseCuenta
                 END AS estado_pago
             FROM cuentas_corrientes cc
             JOIN clientes c ON cc.id_cliente = c.id_cliente
+            LEFT JOIN presupuestos pr ON cc.id_cliente = pr.id_cliente
             LEFT JOIN pagos p 
-                ON p.id_cliente = cc.id_cliente 
+                ON p.id_presupuesto = pr.id_presupuesto 
                 AND p.estado != 'Anulado'
             WHERE cc.saldo_actual > 0
-            GROUP BY cc.id_cliente
+            GROUP BY cc.id_cuenta, cc.id_cliente, c.nombre, cc.saldo_actual
             ORDER BY cc.saldo_actual DESC
         """;
 
-        try(Connection conn = ConexionSQlite.conectar();
-            PreparedStatement stmt = conn.prepareStatement(sql))
+        try (Connection conn = ConexionSQlite.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql))
         {
-
             ResultSet rs = stmt.executeQuery();
 
-            while(rs.next())
+            while (rs.next())
             {
-
                 CuentaCorriente cuenta = new CuentaCorriente(
-                        rs.getInt("id_cuenta"),
-                        rs.getInt("id_cliente"),
-                        rs.getString("nombre"),
-                        rs.getDouble("saldo_actual"),
-                        rs.getString("estado_pago")
+                    rs.getInt("id_cuenta"),
+                    rs.getInt("id_cliente"),
+                    rs.getString("nombre"),
+                    rs.getDouble("saldo_actual"),
+                    rs.getString("estado_pago")
                 );
 
                 lista.add(cuenta);
             }
-
         }
-        catch(Exception e)
+        catch (Exception e)
         {
+            System.err.println("Error al listar cuentas atrasadas: " + e.getMessage());
             e.printStackTrace();
         }
 

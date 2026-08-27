@@ -13,35 +13,63 @@ import java.util.List;
 public class BasePago 
 {
     // MÉTODOS DE OPERACIÓN
-    public String registrarPago(int idCliente, String nombreCliente, int idPresupuesto, double monto, String moneda,
+    public String registrarPago ( int idPresupuesto, double monto, String moneda,
                                double cotizacion, double importePesos, String formaPago, String observaciones) 
+    {
+        return registrarPago(idPresupuesto, monto, moneda, cotizacion, importePesos, formaPago, observaciones, LocalDate.now().toString());
+    }
+
+    public String registrarPago ( int idPresupuesto, double monto, String moneda,
+                               double cotizacion, double importePesos, String formaPago, String observaciones, String fechaPago) 
     {
         String sql = """
             INSERT INTO pagos 
-            (id_cliente, id_presupuesto, fecha_pago, importe, moneda, cotizacion, importe_pesos, forma_pago, observaciones, estado)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'Activo')
+            (id_presupuesto, fecha_pago, importe, moneda, cotizacion, importe_pesos, forma_pago, observaciones, estado)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'Activo')
+        """;
+        
+        // Consulta para averiguar el cliente y su nombre usando el id_presupuesto con JOIN
+        String sqlBuscarCliente = """
+            SELECT c.id_cliente, c.nombre 
+            FROM presupuestos p
+            JOIN clientes c ON p.id_cliente = c.id_cliente
+            WHERE p.id_presupuesto = ?
         """;
 
         String rutaGenerada = "";
-        String fechaActual = LocalDate.now().toString();
+        String fechaActual = fechaPago;
 
         try (Connection conn = ConexionSQlite.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) 
         {
+            // 1. Obtenemos los datos del cliente desde el presupuesto
+            String nombreCliente = "";
+            try (PreparedStatement stmtCli = conn.prepareStatement(sqlBuscarCliente)) 
+            {
+                stmtCli.setInt(1, idPresupuesto);
+                try (ResultSet rsCli = stmtCli.executeQuery()) 
+                {
+                    if (rsCli.next()) 
+                    {
+                        nombreCliente = rsCli.getString("nombre");
+                    }
+                }
+            }
             
-            stmt.setInt(1, idCliente);
-            stmt.setInt(2, idPresupuesto);
-            stmt.setString(3, fechaActual);
-            stmt.setDouble(4, monto);
-            stmt.setString(5, moneda);
-            stmt.setDouble(6, cotizacion);
-            stmt.setDouble(7, importePesos);
-            stmt.setString(8, formaPago);
-            stmt.setString(9, observaciones);
+            // 2. Insertamos el Pago
+            int idPago = 0;
+            
+            stmt.setInt(1, idPresupuesto);
+            stmt.setString(2, fechaActual);
+            stmt.setDouble(3, monto);
+            stmt.setString(4, moneda);
+            stmt.setDouble(5, cotizacion);
+            stmt.setDouble(6, importePesos);
+            stmt.setString(7, formaPago);
+            stmt.setString(8, observaciones);
 
             stmt.executeUpdate();
-
-            int idPago = 0;
+            
             try (ResultSet rs = stmt.getGeneratedKeys()) 
             {
                 if (rs.next()) 
@@ -50,13 +78,14 @@ public class BasePago
                 }
             }
 
+            // 3. Actualizamos saldos
             actualizarSaldoPresupuesto(idPresupuesto, importePesos);
-            actualizarCuentaCorriente(idCliente, importePesos);
+            actualizarCuentaCorriente(idPresupuesto, importePesos);
 
             String monedaLimpia = (moneda != null) ? moneda.trim() : "ARS";
 
             Pago nuevoPago = new Pago(
-                    idPago, idCliente, idPresupuesto, fechaActual, monto,
+                    idPago, idPresupuesto, fechaActual, monto,
                     monedaLimpia, cotizacion, importePesos, formaPago,
                     observaciones, nombreCliente, "Activo"
             );
@@ -105,14 +134,18 @@ public class BasePago
         }
     }
 
-    private void actualizarCuentaCorriente(int idCliente, double pagoPesos)
+    private void actualizarCuentaCorriente(int idPresupuesto, double pagoPesos)
     {
-        String sql = "UPDATE cuentas_corrientes SET saldo_actual = saldo_actual - ? WHERE id_cliente = ?";
+        String sql = """
+        UPDATE cuentas_corrientes 
+        SET saldo_actual = saldo_actual - ? 
+        WHERE id_cliente = (SELECT id_cliente FROM presupuestos WHERE id_presupuesto = ?)
+        """;
         try (Connection conn = ConexionSQlite.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) 
         {
             stmt.setDouble(1, pagoPesos);
-            stmt.setInt(2, idCliente);
+            stmt.setInt(2, idPresupuesto);
             stmt.executeUpdate();
         } 
         catch (Exception e) 
@@ -123,25 +156,36 @@ public class BasePago
 
     public void anularPago(int idPago) 
     {
-        String sqlBuscar = "SELECT id_presupuesto, id_cliente, importe_pesos FROM pagos WHERE id_pago = ?";
+        // Hacemos JOIN con presupuestos para obtener id_cliente
+        String sqlBuscar = """
+            SELECT p.id_presupuesto, pr.id_cliente, p.importe_pesos 
+            FROM pagos p
+            JOIN presupuestos pr ON p.id_presupuesto = pr.id_presupuesto
+            WHERE p.id_pago = ?
+        """;
+        
         String sqlAnular = "UPDATE pagos SET estado = 'Anulado' WHERE id_pago = ?";
+        
         // Lógica de reversión de saldos
         try (Connection conn = ConexionSQlite.conectar()) 
         {
             int idPre = 0, idCli = 0; double imp = 0;
             try (PreparedStatement stB = conn.prepareStatement(sqlBuscar)) 
             {
-                stB.setInt(1, idPago);
-                ResultSet rs = stB.executeQuery();
-                if (rs.next()) 
+                stB.setInt(1, idPago); // 1. Reemplaza el '?' por el idPago que viene por parámetro
+                ResultSet rs = stB.executeQuery(); // 2. Ejecuta la lectura (SELECT)
+                if (rs.next()) // 3. Avanza al primer (y único) registro encontrado
                 {
                     idPre = rs.getInt("id_presupuesto");
-                    idCli = rs.getInt("id_cliente");
+                    idCli = rs.getInt("id_cliente"); //Viene del JOIN
                     imp = rs.getDouble("importe_pesos");
                 }
             }
+            
             // Devolver saldos
+            // Aumenta el saldo pendiente del presupuesto y vuelve su estado a 'Pendiente'
             String sqlRevPre = "UPDATE presupuestos SET saldo_presupuesto = saldo_presupuesto + ?, estado = 'Pendiente' WHERE id_presupuesto = ?";
+            // Le vuelve a sumar la deuda a la Cuenta Corriente global del cliente
             String sqlRevCC = "UPDATE cuentas_corrientes SET saldo_actual = saldo_actual + ? WHERE id_cliente = ?";
             
             try (PreparedStatement stP = conn.prepareStatement(sqlRevPre)) 
@@ -167,10 +211,13 @@ public class BasePago
     public List<Pago> listarPagosPorPresupuesto(int idPresupuesto) 
     {
         List<Pago> lista = new ArrayList<>();
+        
+        // Hacemos el doble JOIN para llegar al cliente desde el presupuesto
         String sql = """
             SELECT p.*, c.nombre AS nombre_cliente
             FROM pagos p
-            JOIN clientes c ON p.id_cliente = c.id_cliente
+            JOIN presupuestos pr ON p.id_presupuesto = pr.id_presupuesto
+            JOIN clientes c ON pr.id_cliente = c.id_cliente
             WHERE p.id_presupuesto = ?
             ORDER BY p.fecha_pago DESC
         """;
@@ -184,10 +231,17 @@ public class BasePago
             while (rs.next()) 
             {
                 lista.add(new Pago(
-                        rs.getInt("id_pago"), rs.getInt("id_cliente"), rs.getInt("id_presupuesto"),
-                        rs.getString("fecha_pago"), rs.getDouble("importe"), rs.getString("moneda"),
-                        rs.getDouble("cotizacion"), rs.getDouble("importe_pesos"), rs.getString("forma_pago"),
-                        rs.getString("observaciones"), rs.getString("nombre_cliente"), rs.getString("estado")
+                        rs.getInt("id_pago"), 
+                        rs.getInt("id_presupuesto"),
+                        rs.getString("fecha_pago"), 
+                        rs.getDouble("importe"), 
+                        rs.getString("moneda"),
+                        rs.getDouble("cotizacion"), 
+                        rs.getDouble("importe_pesos"), 
+                        rs.getString("forma_pago"),
+                        rs.getString("observaciones"), 
+                        rs.getString("nombre_cliente"), 
+                        rs.getString("estado")
                 ));
             }
         } 
@@ -201,11 +255,13 @@ public class BasePago
     public List<Pago> listarPagosPorCliente(int idCliente) 
     {
         List<Pago> lista = new ArrayList<>();
+        // Doble JOIN para vincular el pago con el presupuesto y luego con el cliente
         String sql = """
             SELECT p.*, c.nombre AS nombre_cliente
             FROM pagos p
-            JOIN clientes c ON p.id_cliente = c.id_cliente
-            WHERE p.id_cliente = ?
+            JOIN presupuestos pr ON p.id_presupuesto = pr.id_presupuesto
+            JOIN clientes c ON pr.id_cliente = c.id_cliente
+            WHERE pr.id_cliente = ?
             ORDER BY p.fecha_pago DESC
         """;
 
@@ -218,10 +274,17 @@ public class BasePago
             while (rs.next())
             {
                 lista.add(new Pago(
-                        rs.getInt("id_pago"), rs.getInt("id_cliente"), rs.getInt("id_presupuesto"),
-                        rs.getString("fecha_pago"), rs.getDouble("importe"), rs.getString("moneda"),
-                        rs.getDouble("cotizacion"), rs.getDouble("importe_pesos"), rs.getString("forma_pago"),
-                        rs.getString("observaciones"), rs.getString("nombre_cliente"), rs.getString("estado")
+                        rs.getInt("id_pago"), 
+                        rs.getInt("id_presupuesto"),
+                        rs.getString("fecha_pago"), 
+                        rs.getDouble("importe"), 
+                        rs.getString("moneda"),
+                        rs.getDouble("cotizacion"), 
+                        rs.getDouble("importe_pesos"),
+                        rs.getString("forma_pago"),
+                        rs.getString("observaciones"), 
+                        rs.getString("nombre_cliente"), 
+                        rs.getString("estado")
                 ));
             }
         } 
@@ -235,14 +298,31 @@ public class BasePago
     public List<Pago> listarTodos() 
     {
         List<Pago> lista = new ArrayList<>();
-        String sql = "SELECT p.*, c.nombre FROM pagos p JOIN clientes c ON p.id_cliente = c.id_cliente ORDER BY p.fecha_pago DESC";
+        
+        // Doble JOIN para traer el nombre del cliente pasando por presupuestos
+        String sql = """
+            SELECT p.*, c.nombre AS nombre_cliente
+            FROM pagos p
+            JOIN presupuestos pr ON p.id_presupuesto = pr.id_presupuesto
+            JOIN clientes c ON pr.id_cliente = c.id_cliente
+            ORDER BY p.fecha_pago DESC
+        """;
+        
         try (Connection conn = ConexionSQlite.conectar(); PreparedStatement stmt = conn.prepareStatement(sql); ResultSet rs = stmt.executeQuery()) 
         {
             while (rs.next()) 
             {
-                lista.add(new Pago(rs.getInt("id_pago"), rs.getInt("id_cliente"), rs.getInt("id_presupuesto"), rs.getString("fecha_pago"),
-                        rs.getDouble("importe"), rs.getString("moneda"), rs.getDouble("cotizacion"), rs.getDouble("importe_pesos"),
-                        rs.getString("forma_pago"), rs.getString("observaciones"), rs.getString("nombre"), rs.getString("estado")));
+                lista.add(new Pago(rs.getInt("id_pago"), 
+                        rs.getInt("id_presupuesto"),
+                        rs.getString("fecha_pago"),
+                        rs.getDouble("importe"), 
+                        rs.getString("moneda"),
+                        rs.getDouble("cotizacion"), 
+                        rs.getDouble("importe_pesos"),
+                        rs.getString("forma_pago"),
+                        rs.getString("observaciones"), 
+                        rs.getString("nombre_cliente"),
+                        rs.getString("estado")));
             }
         } 
         catch (Exception e) 
@@ -295,14 +375,17 @@ public class BasePago
     public List<DeudorReporte> obtenerClientesMorosos() 
     {
         List<DeudorReporte> lista = new ArrayList<>();
+        // Doble JOIN pasando por presupuestos para relacionar pagos con el cliente
+        //Incluye condición para que la fecha de pago (MAX(p.fecha_pago)) no contemple pagos anulados.
         String sql = """
             SELECT c.nombre, cc.saldo_actual, 
-            CAST(julianday('now') - julianday(MAX(p.fecha_pago)) AS INTEGER) as dias_atraso
+                   CAST(julianday('now') - julianday(MAX(p.fecha_pago)) AS INTEGER) as dias_atraso
             FROM clientes c
             JOIN cuentas_corrientes cc ON c.id_cliente = cc.id_cliente
-            JOIN pagos p ON c.id_cliente = p.id_cliente
-            WHERE cc.saldo_actual > 0 
-            GROUP BY c.id_cliente
+            JOIN presupuestos pr ON c.id_cliente = pr.id_cliente
+            JOIN pagos p ON pr.id_presupuesto = p.id_presupuesto
+            WHERE cc.saldo_actual > 0 AND p.estado = 'Activo'
+            GROUP BY c.id_cliente, c.nombre, cc.saldo_actual
             HAVING dias_atraso > 30
             ORDER BY dias_atraso DESC
         """;

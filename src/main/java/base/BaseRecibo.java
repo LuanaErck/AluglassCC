@@ -67,10 +67,12 @@ public class BaseRecibo
     public Pago obtenerDatosParaRecibo(int idPago) 
     {
         Pago pago = null;
+        // Doble JOIN: pagos -> presupuestos -> clientes
         String sql = """
             SELECT p.*, c.nombre AS nombre_cliente
             FROM pagos p
-            INNER JOIN clientes c ON p.id_cliente = c.id_cliente
+            INNER JOIN presupuestos pr ON p.id_presupuesto = pr.id_presupuesto
+            INNER JOIN clientes c ON pr.id_cliente = c.id_cliente
             WHERE p.id_pago = ?
         """;
 
@@ -85,7 +87,6 @@ public class BaseRecibo
             {
                 pago = new Pago(
                     rs.getInt("id_pago"),
-                    rs.getInt("id_cliente"),
                     rs.getInt("id_presupuesto"),
                     rs.getString("fecha_pago"),
                     rs.getDouble("importe"),

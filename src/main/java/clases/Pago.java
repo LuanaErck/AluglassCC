@@ -3,7 +3,6 @@ package clases;
 public class Pago
 {
     private int idPago;
-    private int idCliente;
     private int idPresupuesto;
     private String fechaPago;
 
@@ -19,12 +18,11 @@ public class Pago
     
     private String estado;
 
-    public Pago(int idPago, int idCliente, int idPresupuesto, String fechaPago,
+    public Pago(int idPago, int idPresupuesto, String fechaPago,
                 double importe, String moneda, Double cotizacion, double importePesos,
                 String formaPago, String observaciones, String nombreCliente, String estado)
     {
         this.idPago = idPago;
-        this.idCliente = idCliente;
         this.idPresupuesto = idPresupuesto;
         this.fechaPago = fechaPago;
         this.importe = importe;
@@ -40,11 +38,6 @@ public class Pago
     public int getIdPago() 
     { 
         return idPago; 
-    }
-    
-    public int getIdCliente() 
-    { 
-        return idCliente; 
     }
     
     public int getIdPresupuesto() 

@@ -142,32 +142,29 @@ public class RegistrarPresupuesto extends VBox
             String totalTexto = txtTotal.getText().trim();
             String descripcion = txtDescripcion.getText().trim();
 
-            if (cliente == null || Validadores.estaVacio(totalTexto) || Validadores.estaVacio(descripcion)) 
+            boolean datosValidos = cliente != null && Validadores.esNumero(totalTexto)
+                    && !Validadores.estaVacio(descripcion);
+            if (!datosValidos) 
             {
                 mostrarMensaje("❌ Complete todos los campos.", true);
-                return;
             }
-
-            BasePresupuesto base = new BasePresupuesto();
-            base.registrarPresupuesto(cliente.getIdCliente(), Double.parseDouble(totalTexto), descripcion);
-            
-            this.presupuestoCreado = new Presupuesto(
-                0, 
-                cliente.getIdCliente(), 
-                java.time.LocalDate.now().toString(),
-                descripcion, 
-                Double.parseDouble(totalTexto), 
-                Double.parseDouble(totalTexto), // El saldo inicial es el total
-                "Pendiente"
-            );
-            
-            if (ventanaActual != null) 
+            else
             {
-                ventanaActual.close(); 
-            } 
-            else 
-            {
-                rootPrincipal.setCenter(new ListadoPresupuestos(rootPrincipal)); 
+                double total = Double.parseDouble(totalTexto);
+                BasePresupuesto base = new BasePresupuesto();
+                base.registrarPresupuesto(cliente.getIdCliente(), total, descripcion);
+                
+                this.presupuestoCreado = new Presupuesto(0, cliente.getIdCliente(),
+                        java.time.LocalDate.now().toString(), descripcion, total, total, "Pendiente");
+                
+                if (ventanaActual != null) 
+                {
+                    ventanaActual.close(); 
+                } 
+                else 
+                {
+                    rootPrincipal.setCenter(new ListadoPresupuestos(rootPrincipal)); 
+                }
             }
         });
 
@@ -187,7 +184,12 @@ public class RegistrarPresupuesto extends VBox
         stage.setTitle("Aluglass - Nuevo Cliente");
         AgregarCliente layout = new AgregarCliente(stage);
         Scene scene = new Scene(layout);
-        try { scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm()); } catch (Exception e) {}
+        try 
+        { 
+            scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm()); 
+        } 
+        catch (Exception e) {}
+        
         stage.setScene(scene);
         stage.showAndWait();
         actualizarComboClientes();

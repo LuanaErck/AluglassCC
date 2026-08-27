@@ -133,16 +133,15 @@ public class DetalleCuenta extends VBox
                         info.setHeaderText(null);
                         info.setContentText("Este pago ya se encuentra anulado.");
                         info.showAndWait();
-                        return;
                     }
-
-                    // Confirmación de anulación
-                    Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Desea anular este pago?", ButtonType.YES, ButtonType.NO);
-                    if (confirm.showAndWait().get() == ButtonType.YES) 
+                    else
                     {
-                        new BasePago().anularPago(pago.getIdPago());
-                        // Refrescamos la vista
-                        rootPrincipal.setCenter(new DetalleCuenta(rootPrincipal, idCliente, origen));
+                        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION, "¿Desea anular este pago?", ButtonType.YES, ButtonType.NO);
+                        if (confirm.showAndWait().get() == ButtonType.YES) 
+                        {
+                            new BasePago().anularPago(pago.getIdPago());
+                            rootPrincipal.setCenter(new DetalleCuenta(rootPrincipal, idCliente, origen));
+                        }
                     }
                 });
             }

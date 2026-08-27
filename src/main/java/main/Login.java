@@ -36,7 +36,9 @@ public class Login extends Application
             }
         } 
         catch (Exception e) 
-        { e.printStackTrace(); }
+        { 
+            e.printStackTrace(); 
+        }
 
         // PREPARACIÓN DE ICONOS PARA INPUTS 
         ImageView iconUsuario = cargarIcono("/iconos/user.png");
@@ -91,23 +93,20 @@ public class Login extends Application
             if (usuario.isEmpty() || contrasena.isEmpty()) 
             {
                 lblMensaje.setText("Complete todos los campos");
-                return;
             }
-
-            BaseUsuario baseUsuario = new BaseUsuario();
-
-            // 1. Buscamos al usuario por nombre
-            Usuario u = baseUsuario.buscarUsuario(usuario);
-
-            // 2. Verificamos si existe y si el hash coincide
-            if (u != null && Encriptador.verificarPassword(contrasena, u.getContrasena())) 
+            else
             {
-                new MenuPrincipal(stage, u).mostrar();
-            } 
-            else 
-            {
-                lblMensaje.setText("Usuario o contraseña incorrectos");
-                lblMensaje.setStyle("-fx-text-fill: red;");
+                BaseUsuario baseUsuario = new BaseUsuario();
+                Usuario u = baseUsuario.buscarUsuario(usuario);
+                if (u != null && Encriptador.verificarPassword(contrasena, u.getContrasena())) 
+                {
+                    new MenuPrincipal(stage, u).mostrar();
+                } 
+                else 
+                {
+                    lblMensaje.setText("Usuario o contraseña incorrectos");
+                    lblMensaje.setStyle("-fx-text-fill: red;");
+                }
             }
         });
 

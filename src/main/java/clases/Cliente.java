@@ -1,19 +1,14 @@
 package clases;
 
-public class Cliente 
+public class Cliente extends Persona
 {
     private int id_cliente;
-    private String nombre;
-    private String telefono;
-    private String estado;
     
     //Constructor
-    public Cliente(int id_cliente, String nombre, String telefono, String estado) 
+    public Cliente(int id_cliente, String nombre, String telefono, String estado, String cuit) 
     {
+        super(nombre, telefono, estado, cuit);
         this.id_cliente = id_cliente;
-        this.nombre = nombre;
-        this.telefono = telefono;
-        this.estado = estado;
     }
 
     //Getters
@@ -22,20 +17,6 @@ public class Cliente
         return id_cliente; 
     }
     
-    public String getNombre() 
-    { 
-        return nombre; 
-    }
-    
-    public String getTelefono() 
-    { 
-        return telefono; 
-    }
-    
-        public String getEstado() 
-    { 
-        return estado; 
-    }
     
     @Override
     public String toString()
@@ -43,19 +24,9 @@ public class Cliente
         return nombre;
     }
 
-    public void setNombre(String nombre) 
+    public void setIdCliente(int idCliente) 
     {
-        this.nombre = nombre;
-    }
-    
-    public void setTelefono(String telefono) 
-    {
-        this.telefono = telefono;
-    }
-    
-    public void setEstado(String estado) 
-    {
-        this.estado = estado;
+        this.id_cliente = id_cliente;
     }
 }
 

@@ -15,7 +15,7 @@ public class MenuPrincipal
 
     private Stage stage;
     private BorderPane root;
-    private Usuario usuarioLogueado; //Se debe tener esta variable global en la clase
+    private Usuario usuarioLogueado;
 
     public MenuPrincipal(Stage stage, Usuario u) 
     {
@@ -46,7 +46,7 @@ public class MenuPrincipal
             logoContainer.getChildren().add(logoMenu);
         } catch (Exception e) {}
 
-        // Espaciador Superior (Empuja el menú al centro)
+        // Espaciador Superior
         Region spacerTop = new Region();
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
 
@@ -54,7 +54,7 @@ public class MenuPrincipal
         Accordion accordion = new Accordion();
         configurarAcordeon(accordion);
 
-        // Espaciador Inferior (Empuja el botón al fondo)
+        // Espaciador Inferior
         Region spacerBottom = new Region();
         VBox.setVgrow(spacerBottom, Priority.ALWAYS);
 
@@ -62,7 +62,7 @@ public class MenuPrincipal
         Button btnSalir = new Button("CERRAR SESIÓN");
         btnSalir.setId("boton-salir");
         btnSalir.setMaxWidth(Double.MAX_VALUE);
-        btnSalir.setMinHeight(50); // Altura fija para que no se aplaste
+        btnSalir.setMinHeight(50);
         btnSalir.setOnAction(e -> new Login().start(stage));
 
         VBox bottomContainer = new VBox(btnSalir);
@@ -79,85 +79,129 @@ public class MenuPrincipal
         root.setCenter(centro);
 
         // ESCENA 
-        // Usamos el tamaño máximo disponible para que no se esconda nada
         Scene scene = new Scene(root, 1280, 720); 
         scene.getStylesheets().add(getClass().getResource("/css/estilos.css").toExternalForm());
 
         stage.setScene(scene);
-        
-        // CORRECCIÓN DE TAMAÑO: Forzamos maximizado o pantalla completa
         stage.setMaximized(true); 
-        
         stage.setTitle("Aluglass CC - Menú Principal");
         stage.show();
     }
 
     private void configurarAcordeon(Accordion accordion) 
     {
-        
-        // 1. CLIENTES
-        TitledPane paneClientes = crearSeccion("CLIENTES", "/iconos/clientes.png",
+        // ==========================================
+        // 1) CLIENTES
+        // ==========================================
+        TitledPane subGestionClientes = crearSubCategoria("Gestión de clientes",
             crearSubBoton("Añadir cliente", e -> root.setCenter(new AgregarCliente(root))),
             crearSubBoton("Ver todos", e -> root.setCenter(new ListadoClientes(root)))
         );
 
-        // 2. CUENTAS CORRIENTES
-        TitledPane paneCuentas = crearSeccion("CUENTAS", "/iconos/cuentas.png",
+        TitledPane subPresupuestos = crearSubCategoria("Presupuestos de ventas",
+            crearSubBoton("Añadir presupuesto", e -> root.setCenter(new RegistrarPresupuesto(root))),
+            crearSubBoton("Ver todos", e -> root.setCenter(new ListadoPresupuestos(root)))
+        );
+
+        TitledPane subCobros = crearSubCategoria("Cobros",
+            crearSubBoton("Registrar cobro", e -> root.setCenter(new RegistrarPago(root))),
+            crearSubBoton("Historial", e -> root.setCenter(new ListaPagos(root)))
+        );
+
+        TitledPane subCuentasCorrientes = crearSubCategoria("Cuentas corrientes",
             crearSubBoton("Listar cuentas", e -> root.setCenter(new ListadoCuentas(root))),
             crearSubBoton("Cuentas pendientes", e -> root.setCenter(new ListadoCuentasAtrasadas(root)))
         );
 
-        // 3. PAGOS
-        TitledPane panePagos = crearSeccion("PAGOS", "/iconos/pagos.png",
-            crearSubBoton("Registrar pago", e -> root.setCenter(new RegistrarPago(root))),
-            crearSubBoton("Historial de pagos", e -> root.setCenter(new ListaPagos(root)))
+        TitledPane paneClientes = crearSeccion("CLIENTES", "/iconos/clientes.png",
+            subGestionClientes, subPresupuestos, subCobros, subCuentasCorrientes
         );
 
-        // 4. PRESUPUESTOS
-        TitledPane panePresupuestos = crearSeccion("PRESUPUESTOS", "/iconos/presupuestos.png",
-            crearSubBoton("Añadir presupuesto", e -> root.setCenter(new RegistrarPresupuesto(root))),
-            crearSubBoton("Ver todos", e -> root.setCenter(new ListadoPresupuestos(root)))
+        // ==========================================
+        // 2) PROVEEDORES
+        // ==========================================
+        TitledPane subGestionProveedores = crearSubCategoria("Gestión de proveedores",
+            crearSubBoton("Añadir proveedor", e -> root.setCenter(new AgregarProveedor(root))),
+            crearSubBoton("Ver todos", e -> root.setCenter(new ListadoProveedores()))
         );
-        
-        // 5. MI PERFIL
-        TitledPane panePerfil = crearSeccion("MI PERFIL", "/iconos/perfil.png",
-            crearSubBoton("Editar mi perfil", e -> 
-            {
-            // Pasamos el usuario logueado, NO el root
-            VentanaPerfil ventana = new VentanaPerfil(this.usuarioLogueado);
-            root.setCenter(ventana.getView());
-            })
+
+        TitledPane subCompras = crearSubCategoria("Compras",
+            crearSubBoton("Registrar compra", e -> root.setCenter(new RegistrarCompra(root))),
+            crearSubBoton("Historial de compras", e -> root.setCenter(new ListadoCompras(root)))
         );
-        
-        // 6. REPORTES
-        TitledPane paneReportes = crearSeccion("ESTADÍSTICAS", "/iconos/reportes.png",
-            crearSubBoton("Centro de Reportes", e -> 
+
+        TitledPane subPagosProveedores = crearSubCategoria("Pagos",
+            crearSubBoton("Registrar pago", e -> root.setCenter(new RegistrarPagoProveedor(root))),
+            crearSubBoton("Historial de pagos", e -> root.setCenter(new ListaPagosProveedores()))
+        );
+
+        TitledPane subCuentasProveedores = crearSubCategoria("Cuentas corrientes",
+            crearSubBoton("Deudas y vencimientos", e -> root.setCenter(new ListadoCuentasProveedores(root)))
+        );
+
+        TitledPane paneProveedores = crearSeccion("PROVEEDORES", "/iconos/proveedores.png",
+            subGestionProveedores, subCompras, subPagosProveedores, subCuentasProveedores
+        );
+
+        // ==========================================
+        // 3) ESTADÍSTICAS
+        // ==========================================
+        TitledPane paneEstadisticas = crearSeccion("ESTADÍSTICAS", "/iconos/reportes.png",
+            crearSubBoton("Panel de control visual", e -> 
             {
                 Reportes vr = new Reportes();
                 root.setCenter(vr.getView());
             })
         );
-        
-        //7. MANUAL DE USUAURIO
+
+        // ==========================================
+        // 4) MI PERFIL
+        // ==========================================
+        TitledPane panePerfil = crearSeccion("MI PERFIL", "/iconos/perfil.png",
+            crearSubBoton("Editar mis credenciales", e -> 
+            {
+                VentanaPerfil ventana = new VentanaPerfil(this.usuarioLogueado);
+                root.setCenter(ventana.getView());
+            })
+        );
+
+        // ==========================================
+        // 5) MANUAL DE USUARIO
+        // ==========================================
         TitledPane paneManual = crearSeccion("MANUAL DE USUARIO", "/iconos/manual.png",
-            crearSubBoton("Ver Manual", e -> 
+            crearSubBoton("Ver manual de usuario", e -> 
             {
                 Manual vr = new Manual();
                 root.setCenter(vr.getView());
-            })
+            }),
+            crearSubBoton("Exportar manual", e -> exportarManual())
         );
-      
-        accordion.getPanes().addAll(paneClientes, paneCuentas, panePagos, panePresupuestos, paneReportes, panePerfil, paneManual);
+
+        // ==========================================
+        // CARGA AL ACORDEÓN
+        // ==========================================
+        accordion.getPanes().addAll(
+            paneClientes,
+            paneProveedores,
+            paneEstadisticas,
+            panePerfil,
+            paneManual
+        );
     }
 
-    private TitledPane crearSeccion(String titulo, String iconPath, Button... subBotones) 
+    private TitledPane crearSeccion(String titulo, String iconPath, javafx.scene.Node... elementos) 
     {
-        VBox contenido = new VBox(10);
-        contenido.setPadding(new Insets(10, 0, 10, 20));
+        VBox contenido = new VBox(6);
+        contenido.setPadding(new Insets(10, 0, 10, 15));
         contenido.setStyle("-fx-background-color: #FFFFFF;");
-        contenido.getChildren().addAll(subBotones);
+        contenido.getChildren().addAll(elementos);
 
-        TitledPane pane = new TitledPane(titulo, contenido);
+        // Permite scroll si la lista de opciones de la sección es más larga que la pantalla
+        ScrollPane scrollContent = new ScrollPane(contenido);
+        scrollContent.setFitToWidth(true);
+        scrollContent.setStyle("-fx-background-color: transparent; -fx-background: transparent;");
+
+        TitledPane pane = new TitledPane(titulo, scrollContent);
         pane.getStyleClass().add("seccion-menu");
 
         try 
@@ -171,6 +215,30 @@ public class MenuPrincipal
 
         return pane;
     }
+    
+    // Método para crear los sub-desplegables (ej: "Presupuestos de ventas")
+    private TitledPane crearSubCategoria(String titulo, Button... subBotones) 
+    {
+        VBox contenido = new VBox(2);
+        contenido.setPadding(new Insets(6, 0, 6, 15)); // Sangría para los botones internos
+        contenido.setStyle("-fx-background-color: transparent;");
+        contenido.getChildren().addAll(subBotones);
+
+        TitledPane pane = new TitledPane(titulo, contenido);
+        pane.setExpanded(false); // Arrancan cerrados por defecto
+        
+        pane.getStyleClass().add("sub-categoria-pane");
+
+        return pane;
+    }
+
+    private Label crearSubtitulo(String texto) 
+    {
+        Label lbl = new Label(texto);
+        lbl.setStyle("-fx-font-weight: bold; -fx-text-fill: #555555; -fx-font-size: 13px;");
+        lbl.setPadding(new Insets(8, 0, 2, 5));
+        return lbl;
+    }
 
     private Button crearSubBoton(String texto, javafx.event.EventHandler<javafx.event.ActionEvent> evento) 
     {
@@ -178,7 +246,23 @@ public class MenuPrincipal
         btn.getStyleClass().add("sub-boton-menu");
         btn.setMaxWidth(Double.MAX_VALUE);
         btn.setAlignment(Pos.CENTER_LEFT);
+        btn.setPadding(new Insets(5, 0, 5, 15)); // Un poquito más de sangría para destacar que depende del subtítulo
         btn.setOnAction(evento);
         return btn;
+    }
+
+    private void exportarManual() 
+    {
+        String ruta = utilidades.GeneradorManualPDF.generar();
+        if (ruta != null)
+        {
+            Alert aviso = new Alert(Alert.AlertType.INFORMATION, "Manual exportado correctamente en: " + new java.io.File(ruta).getAbsolutePath());
+            aviso.setHeaderText(null);
+            aviso.showAndWait();
+        } 
+        else 
+        {
+            new Alert(Alert.AlertType.ERROR, "No se pudo exportar el manual.").showAndWait();
+        }
     }
 }

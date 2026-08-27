@@ -155,6 +155,10 @@ public class ListadoClientes extends VBox
         // Columna Teléfono
         TableColumn<Cliente, String> colTelefono = new TableColumn<>("Teléfono");
         colTelefono.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        
+        // Columna Cuit
+        TableColumn<Cliente, String> colCuit = new TableColumn<>("CUIT");
+        colCuit.setCellValueFactory(new PropertyValueFactory<>("cuit"));
 
         // Columna Estado con formato de color
         TableColumn<Cliente, String> colEstado = new TableColumn<>("Estado");
@@ -225,6 +229,6 @@ public class ListadoClientes extends VBox
             }
         });
 
-        tabla.getColumns().addAll(colId, colNombre, colTelefono, colEstado, colAccion);
+        tabla.getColumns().addAll(colId, colNombre, colTelefono, colCuit, colEstado, colAccion);
     }
 }

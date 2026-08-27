@@ -22,30 +22,30 @@ public class Manual
         root.setStyle("-fx-background-color: white;");
 
         // 1. PANEL LATERAL (ÍNDICE) 
-        VBox indice = new VBox(10);
-        indice.setPadding(new Insets(25));
+        VBox indice = new VBox(8);
+        indice.setPadding(new Insets(20));
         indice.setStyle("-fx-background-color: #f8f9fa; -fx-border-color: #ddd; -fx-border-width: 0 1 0 0;");
-        indice.setMinWidth(280);
+        indice.setMinWidth(300);
 
         Label titleIndice = new Label("GUÍA DE OPERACIONES");
         titleIndice.setStyle("-fx-font-weight: bold; -fx-font-size: 15px; -fx-text-fill: #2c3e50;");
         
         Separator sep = new Separator();
-        sep.setPadding(new Insets(10, 0, 10, 0));
+        sep.setPadding(new Insets(5, 0, 10, 0));
 
         indice.getChildren().addAll(titleIndice, sep);
 
+        // Índice alineado a la estructura real del sistema
         indice.getChildren().addAll(
-            crearBtnIndice("1. Acceso al Sistema", 0),
-            crearBtnIndice("2. Recuperación de contraseña", 1),
-            crearBtnIndice("3. Panel Principal (Menú)", 2),
-            crearBtnIndice("4. Módulo de Clientes", 3),
-            crearBtnIndice("5. Cuentas Corrientes", 4),
-            crearBtnIndice("6. Gestión de Presupuestos", 5),
-            crearBtnIndice("7. Registro de Cobranzas", 6),
-            crearBtnIndice("8. Reportes y Estadísticas", 7),
-            crearBtnIndice("9. Mi Perfil y Seguridad", 8),
-            crearBtnIndice("10. Cierre de Sesión", 9)
+            crearBtnIndice("1. Acceso al Sistema (Login)", 0),
+            crearBtnIndice("2. Recuperación de Contraseña", 1),
+            crearBtnIndice("3. Estructura del Menú Principal", 2),
+            crearBtnIndice("4. Módulo Clientes", 3),
+            crearBtnIndice("5. Módulo Proveedores", 4),
+            crearBtnIndice("6. Módulo Estadísticas", 5),
+            crearBtnIndice("7. Mi Perfil y Seguridad", 6),
+            crearBtnIndice("8. Manual de Usuario", 7),
+            crearBtnIndice("9. Cierre de Sesión", 8)
         );
 
         // 2. ÁREA DE CONTENIDO 
@@ -67,155 +67,126 @@ public class Manual
 
     private void armarContenidoDetallado() 
     {
-        // SECCIÓN 1: LOGIN (Esta está perfecta)
+        // SECCIÓN 1: LOGIN
         contenedorSecciones.getChildren().add(crearSeccion(
             "1. Acceso al Sistema (Login)",
-            "Para ingresar a Aluglass, siga estos pasos:\n\n" +
+            "Para ingresar al sistema Aluglass, siga estos pasos:\n\n" +
             "1. Introduzca su **Nombre de Usuario** y **Contraseña** en los campos correspondientes.\n" +
             "2. Presione el botón **[INGRESAR]**.\n\n" +
             "Si los datos son incorrectos, el sistema emitirá una alerta y denegará el acceso por seguridad.",
             "CAPTURA_LOGIN.png" 
         ));
 
-        // SECCIÓN 2: RECUPERACIÓN DE CONTRASEÑA (CORREGIDA: Se quitó el texto del parámetro de imagen)
+        // SECCIÓN 2: RECUPERACIÓN DE CONTRASEÑA
         contenedorSecciones.getChildren().add(crearSeccion(
             "2. Recuperación de Contraseña",
             "En caso de olvido de credenciales, el sistema cuenta con un asistente de recuperación:\n\n" +
             "• **Paso 1: Identificación**\n" +
             "Haga clic en **[¿Olvidó su contraseña?]** e ingrese su nombre de usuario.\n" +
             "[IMG:CAPTURA_OLVIDO.png]\n\n" +
-            "• **Paso 2: Validation de Identidad**\n" +
-            "Responda a su pregunta de seguridad preconfigurada. La respuesta debe ser exacta.\n" +
+            "• **Paso 2: Validación de Identidad**\n" +
+            "Responda a su pregunta de seguridad preconfigurada.\n" +
             "[IMG:CAPTURA_PREGUNTA.png]\n\n" +
             "• **Paso 3: Restablecimiento**\n" +
             "Una vez validado, el sistema le permitirá ingresar y confirmar su nueva clave de acceso.\n" +
             "[IMG:CAPTURA_NUEVA_CONTRASEÑA.png]\n\n" +
             "Al finalizar, será redirigido automáticamente a la pantalla de inicio para ingresar con sus nuevos datos.",
-            "" // Se deja vacío porque las imágenes ya se cargan de forma intermedia con [IMG:]
+            "" 
         ));
 
         // SECCIÓN 3: MENÚ PRINCIPAL
         contenedorSecciones.getChildren().add(crearSeccion(
-            "3. Panel Principal de Navegación",
-            "Desde el menú principal podrá acceder a todos los módulos operativos del sistema:\n\n" +
+            "3. Estructura del Menú Principal",
+            "El menú lateral se despliega organizando las operaciones según las áreas clave de la vidriería:\n\n" +
             "[IMG:CAPTURA_MENU.png]\n\n" +
-            "• **Clientes**: Administración de la base de datos de contactos.\n" +
-            "• **Cuentas**: Monitoreo de saldos y estados financieros.\n" +
-            "• **Pagos**: Registro de ingresos y consulta de historial global.\n" +
-            "• **Presupuestos**: Carga de trabajos de carpintería y seguimiento.\n" +
-            "• **Estadísticas**: Análisis visual del rendimiento del negocio.\n" +
-            "• **Mi Perfil**: Configuración de seguridad del usuario actual.\n" +
-            "• **Cerrar Sesión**: Salida segura del sistema.",
+            "1. **Clientes**: Gestión comercial, emisión de presupuestos, cobranzas y cuentas corrientes.\n" +
+            "2. **Proveedores**: Gestión de compras, registro de pagos y seguimiento de deudas/vencimientos.\n" +
+            "3. **Estadísticas**: Acceso directo al Panel de Control Visual.\n" +
+            "4. **Mi Perfil**: Edición de credenciales de seguridad.\n" +
+            "5. **Manual de Usuario**: Visualización interactiva y exportación en PDF.\n" +
+            "6. **Cerrar Sesión**: Salida segura del sistema.",
             ""
         ));
 
-        // SECCIÓN 4: GESTIÓN DE CLIENTES
+        // SECCIÓN 4: MÓDULO CLIENTES
         contenedorSecciones.getChildren().add(crearSeccion(
             "4. Módulo de Clientes",
-            "Este módulo permite administrar la información de los clientes y vincularlos a sus estados financieros.\n\n" +
+            "Este módulo abarca la administración de clientes y su ciclo comercial completo:\n\n" +
             "[IMG:CAPTURA_CLIENTE.png]\n\n" +
-            "**A. Consulta y Listado:**\n" +
-            "Utilice el botón **[VER TODOS]** para desplegar el padrón completo. Aquí podrá visualizar el estado rápido de cada contacto.\n" +
-            "[IMG:CAPTURA_LISTA_TODOS_CLIENTES.png]\n\n" +
-            "**B. Registro de Nuevo Cliente:**\n" +
-            "1. Presione **[AÑADIR CLIENTE]**.\n" +
-            "2. Complete el formulario (Nombre y Teléfono son campos obligatorios).\n" +
-            "3. Al guardar, el sistema creará automáticamente su Cuenta Corriente.\n" +
-            "[IMG:CAPTURA_FORMULARIO_CLIENTE.png]\n\n" +
-            "**C. Edición y Mantenimiento:**\n" +
-            "Seleccione un cliente de la lista y presione **[EDITAR]** para actualizar sus datos personales.\n" +
-            "[IMG:CAPTURA_VENTANA_EDICION_CLIENTE.png]\n\n" +
-            "**D. Acceso a Cuenta Corriente:**\n" +
-            "Mediante el botón **[CUENTA]**, accederá de forma directa al historial de movimientos del cliente seleccionado.\n" +
-            "[IMG:CAPTURA_HISTORIAL_CLIENTE.png]",
+            "• **Gestión de Clientes**:\n" +
+            "  - **Añadir cliente**: Formulario para dar de alta nuevos contactos.\n" +
+            "  - **Ver todos**: Padrón completo con opciones de búsqueda, consulta y edición.\n" +
+            "  [IMG:CAPTURA_FORMULARIO_CLIENTE.png]\n\n" +
+            "• **Presupuestos de Ventas**:\n" +
+            "  - **Añadir presupuesto**: Carga de presupuestos para trabajos de carpintería y vidriería.\n" +
+            "  - **Ver todos**: Historial general, filtrado por estados y emisión de comprobantes PDF.\n" +
+            "  [IMG:CAPTURA_NUEVO_PRESUPUESTO.png]\n\n" +
+            "• **Cobros**:\n" +
+            "  - **Registrar cobro**: Carga de ingresos vinculados a presupuestos (admite cálculo automático en USD).\n" +
+            "  - **Historial**: Registro histórico de cobros y reimpresión de recibos PDF.\n" +
+            "  [IMG:CAPTURA_FORMULARIO_PAGO.png]\n\n" +
+            "• **Cuentas Corrientes**:\n" +
+            "  - **Listar cuentas**: Consulta global de saldos de todos los clientes.\n" +
+            "  - **Cuentas pendientes**: Filtro rápido de clientes con saldos deudores (morosos).",
             ""
         ));
 
-        // SECCIÓN 5: CUENTAS CORRIENTES (CORREGIDA: Se movió la imagen al texto intermedio)
+        // SECCIÓN 5: MÓDULO PROVEEDORES
         contenedorSecciones.getChildren().add(crearSeccion(
-            "5. Gestión de Cuentas Corrientes",
-            "Centraliza el control de deudas y saldos de los clientes de la vidriería.\n\n" +
-            "[IMG:CAPTURA_CUENTAS_GENERAL.png]\n\n" +
-            "**A. Listado General:**\n" +
-            "Muestra a todos los clientes y su saldo total (positivo o negativo).\n" +
-            "[IMG:CAPTURA_LISTADO_GENERAL.png]\n\n" +
-            "**B. Cuentas Pendientes (Morosos):**\n" +
-            "Filtra automáticamente la lista para mostrar únicamente a los clientes que presentan deudas activas.\n" +
-            "[IMG:CAPTURA_LISTADO_MOROSOS.png]\n\n" +
-            "**C. Historial Detallado:**\n" +
-            "Al presionar **[VER HISTORIAL]**, se visualiza la ficha técnica con el detalle cronológico de todos los presupuestos y pagos del cliente.\n\n" +
-            "[IMG:CAPTURA_FICHA_TECNICA_CUENTA.png]",
+            "5. Módulo de Proveedores",
+            "Permite administrar la relación con los proveedores de insumos y materia prima:\n\n" +
+            "[IMG:CAPTURA_PROVEEDORES_MENU.png]\n\n" +
+            "• **Gestión de Proveedores**:\n" +
+            "  - **Añadir proveedor**: Alta con Razón Social, CUIT, teléfono y datos bancarios (CBU/Alias).\n" +
+            "  - **Ver todos**: Padrón general para consultar o modificar datos de proveedores.\n" +
+            "  [IMG:CAPTURA_FORMULARIO_PROVEEDOR.png]\n\n" +
+            "• **Compras**:\n" +
+            "  - **Registrar compra**: Carga de facturas de compra con detalle de ítems e importes.\n" +
+            "  - **Historial de compras**: Consulta cronológica y ficha detallada de cada compra.\n" +
+            "  [IMG:CAPTURA_REGISTRAR_COMPRA.png]\n\n" +
+            "• **Pagos**:\n" +
+            "  - **Registrar pago**: Asignación de pagos a facturas de proveedores pendientes.\n" +
+            "  - **Historial de pagos**: Registro histórico de egresos a proveedores.\n" +
+            "  [IMG:CAPTURA_REGISTRAR_PAGO_PROVEEDOR.png]\n\n" +
+            "• **Cuentas Corrientes**:\n" +
+            "  - **Deudas y vencimientos**: Monitoreo de saldos a pagar y fechas límite de vencimiento.",
             ""
         ));
 
-        // SECCIÓN 6: GESTIÓN DE PRESUPUESTOS (CORREGIDA: Se movió la imagen final al texto de arriba)
+        // SECCIÓN 6: ESTADÍSTICAS
         contenedorSecciones.getChildren().add(crearSeccion(
-            "6. Gestión de Presupuestos",
-            "Módulo destinado a la creación y seguimiento de presupuestos por trabajos de carpintería.\n\n" +
-            "[IMG:CAPTURA_PRESUPUESTO_MODULO.png]\n\n" +
-            "**A. Creación de Nuevo Presupuesto:**\n" +
-            "Ingrese el cliente, el monto total y el detalle del trabajo. Puede usar el botón **[+]** para dar de alta un cliente nuevo rápidamente.\n" +
-            "[IMG:CAPTURA_NUEVO_PRESUPUESTO.png]\n\n" +
-            "**B. Control y Seguimiento:**\n" +
-            "Acceda a **[VER TODOS]** para consultar el historial. Puede filtrar por nombre de cliente o por estado del presupuesto.\n" +
-            "[IMG:CAPTURA_HISTORIAL_PRESUPUESTOS.png]\n\n" +
-            "**C. Edición:**\n" +
-            "Podrá modificar presupuestos siempre y cuando no tengan pagos registrados vinculados.\n" +
-            "[IMG:CAPTURA_EDICION_PRESUPUESTO.png]\n\n" +
-            "**D. Detalles y Comprobantes:**\n" +
-            "Desde el botón **[DETALLE]**, podrá ver la información técnica y descargar el **PDF** de los recibos asociados.\n\n" +
-            "[IMG:CAPTURA_VISOR_PDF.png]",
+            "6. Módulo de Estadísticas",
+            "Proporciona herramientas visuales para el control financiero y operativo del negocio.\n\n" +
+            "• **Panel de Control Visual**:\n" +
+            "Despliega gráficos e indicadores clave (KPIs) sobre ingresos del mes, rendimiento de ventas, facturación histórica, compras a proveedores y alertas de morosidad/vencimientos.\n\n" +
+            "[IMG:CAPTURA_PANEL_ESTADISTICAS.png]",
             ""
         ));
 
-        // SECCIÓN 7: PAGOS Y COMPROBANTES
+        // SECCIÓN 7: MI PERFIL Y SEGURIDAD
         contenedorSecciones.getChildren().add(crearSeccion(
-            "7. Módulo de Pagos y Cobranzas",
-            "Este módulo gestiona los ingresos de dinero y la emisión de comprobantes.\n\n" +
-            "[IMG:CAPTURA_MODULO_PAGOS.png]\n\n" +
-            "**A. Registro de Cobranza:**\n" +
-            "1. Presione **[REGISTRAR PAGO]**.\n" +
-            "2. Seleccione el Cliente y luego el presupuesto que desea abonar.\n" +
-            "3. En caso de pagos en **Dólares (USD)**, el sistema permite ingresar la cotización para el cálculo automático en pesos.\n" +
-            "[IMG:CAPTURA_FORMULARIO_PAGO.png]\n\n" +
-            "**B. Generación de Recibos:**\n" +
-            "Al confirmar el pago, el sistema ofrecerá generar el comprobante en formato **PDF** para su entrega al cliente.\n" +
-            "[IMG:CAPTURA_ALERTA_PDF.png]\n\n" +
-            "**C. Historial de Pagos:**\n" +
-            "Consulte el listado global para ver todos los ingresos registrados y reimprimir recibos si es necesario mediante el botón **[VER PDF]**.\n" +
-            "[IMG:CAPTURA_HISTORIAL_PAGOS_GLOBAL.png]",
+            "7. Mi Perfil y Seguridad",
+            "Gestión de las credenciales de acceso del usuario activo:\n\n" +
+            "• **Editar mis credenciales**:\n" +
+            "Permite modificar la contraseña actual y actualizar la pregunta/respuesta de seguridad requerida para la recuperación de la cuenta.\n\n" +
+            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]",
             ""
         ));
 
-        // SECCIÓN 8: ESTADÍSTICAS (CORREGIDA: Se unificó el parámetro de la imagen)
+        // SECCIÓN 8: MANUAL DE USUARIO
         contenedorSecciones.getChildren().add(crearSeccion(
-            "8. Análisis y Estadísticas",
-            "Herramienta de análisis para la toma de decisiones financieras.\n\n" +
-            "**A. Análisis de Ingresos:**\n" +
-            "Visualice el total acumulado histórico y el desglose de ingresos del mes actual para controlar el flujo de caja.\n" +
-            "[IMG:CAPTURA_PANEL_ESTADISTICAS.png]\n\n" +
-            "**B. Reporte de Morosidad:**\n" +
-            "Genera una lista de clientes con deudas críticas (aquellas con más de 30 días de antigüedad).\n\n" +
-            "[IMG:CAPTURA_REPORTE_MOROSIDAD.png]",
+            "8. Manual de Usuario",
+            "Herramienta integrada para asistencia en pantalla e instructivo descargable:\n\n" +
+            "• **Ver manual de usuario**: Despliega esta pantalla interactiva con navegación por secciones.\n" +
+            "• **Exportar manual**: Genera automáticamente un archivo **Manual_Aluglass.pdf** dentro de la carpeta `manuales` ubicada en el directorio del programa.",
             ""
         ));
 
-        // SECCIÓN 9: SEGURIDAD DEL PERFIL (CORREGIDA: Se pasó la última imagen al cuerpo del texto)
+        // SECCIÓN 9: CIERRE DE SESIÓN
         contenedorSecciones.getChildren().add(crearSeccion(
-            "9. Perfil de Usuario y Seguridad",
-            "Ajustes de la cuenta de usuario activa:\n\n" +
-            "• **Cambio de Credenciales**: Actualice su contraseña periódicamente.\n" +
-            "• **Pregunta de Seguridad**: Configure o edite su pregunta y respuesta secreta para asegurar la recuperación de su cuenta.\n\n" +
-            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]\n\n" +
-            "[IMG:CAPTURA_EDITAR_PREGUNTA_SEGURIDAD.png]",
-            ""
-        ));
-
-        // SECCIÓN 10: CIERRE DE SESIÓN (CORREGIDA: Se unificó la imagen de pie de página)
-        contenedorSecciones.getChildren().add(crearSeccion(
-            "10. Salida Segura",
-            "Para finalizar su jornada de trabajo, utilice siempre el botón **[CERRAR SESIÓN]**.\n\n" +
-            "Esta acción destruye la sesión actual y protege los datos de Aluglass ante accesos no autorizados, regresando al usuario a la pantalla de Login.",
+            "9. Salida Segura",
+            "Para finalizar su jornada de trabajo, seleccione la opción **Cerrar sesión**.\n\n" +
+            "Esta acción destruye la sesión actual para evitar accesos no autorizados y redirige a la pantalla de Login.",
             "CAPTURA_CERRAR_SESION.png"
         ));
     }
@@ -238,23 +209,20 @@ public class Manual
             
             if (i == 0) 
             {
-                // La primera parte SIEMPRE es texto (lo que está antes del primer [IMG:)
-                if (!parte.trim().isEmpty()) {
+                if (!parte.trim().isEmpty()) 
+                {
                     seccion.getChildren().add(crearFlowTexto(parte));
                 }
             } 
             else 
             {
-                // Las partes siguientes contienen "NombreImagen.png] Texto..."
                 if (parte.contains("]")) 
                 {
                     String[] subPartes = parte.split("\\]", 2);
                     
-                    // A. Añadir la imagen que causó el split
                     String nombreImg = subPartes[0].trim();
                     seccion.getChildren().add(configurarImagen(nombreImg));
                     
-                    // B. Añadir el texto que sigue a esa imagen (si existe)
                     if (subPartes.length > 1 && !subPartes[1].trim().isEmpty()) 
                     {
                         seccion.getChildren().add(crearFlowTexto(subPartes[1]));
@@ -277,16 +245,13 @@ public class Manual
         TextFlow flow = new TextFlow();
         flow.setLineSpacing(5);
 
-        // Dividimos el texto buscando los delimitadores **
         String[] partes = contenido.split("(?<=\\*\\*)|(?=\\*\\*)");
-        
         boolean esNegrita = false;
 
         for (String parte : partes) 
         {
             if (parte.equals("**")) 
             {
-                // Cambia el estado y salta la impresión de los asteriscos
                 esNegrita = !esNegrita;
                 continue; 
             }
@@ -295,13 +260,11 @@ public class Manual
             
             if (esNegrita) 
             {
-                // Mantiene tus 16px pero añade el grosor de negrita
-                textoNodo.setStyle("-fx-font-size: 16px; -fx-font-weight: bold;");
+                textoNodo.setStyle("-fx-font-size: 15px; -fx-font-weight: bold; -fx-fill: #2c3e50;");
             } 
             else 
             {
-                // Mantiene tus 16px en estado normal
-                textoNodo.setStyle("-fx-font-size: 16px; -fx-font-weight: normal;");
+                textoNodo.setStyle("-fx-font-size: 15px; -fx-font-weight: normal; -fx-fill: #333333;");
             }
             
             flow.getChildren().add(textoNodo);
@@ -312,7 +275,6 @@ public class Manual
 
     private Node configurarImagen(String nombre) 
     {
-        // Usamos un HBox como envoltorio para poder centrar la "caja" de la imagen
         HBox centrador = new HBox();
         centrador.setAlignment(Pos.CENTER);
         centrador.setFillHeight(false);
@@ -320,9 +282,7 @@ public class Manual
         VBox caja = new VBox();
         caja.setAlignment(Pos.CENTER);
         caja.setPadding(new Insets(10));
-        caja.setStyle("-fx-border-color: #EEE9E9; -fx-background-color: #ffff; -fx-border-radius: 5;");
-        
-        // No permitimos que la caja gris crezca más que la imagen que contiene
+        caja.setStyle("-fx-border-color: #EEE9E9; -fx-background-color: #ffffff; -fx-border-radius: 5;");
         caja.setMaxWidth(Region.USE_PREF_SIZE);
 
         if (nombre == null || nombre.trim().isEmpty() || !nombre.contains(".")) 
@@ -338,9 +298,8 @@ public class Manual
             iv.setPreserveRatio(true);
             iv.setSmooth(true);
 
-            // LÓGICA DE TAMAÑO:
             double anchoOriginal = img.getWidth();
-            double limitePantalla = 550; // Ajusta este valor si tu pantalla es pequeña
+            double limitePantalla = 550; 
 
             if (anchoOriginal > limitePantalla) 
             {
@@ -356,8 +315,11 @@ public class Manual
         }
         catch (Exception e) 
         {
-            System.out.println("Error: " + nombre);
-            return new VBox(); 
+            Label pendiente = new Label("Captura pendiente: " + nombre);
+            pendiente.setStyle("-fx-text-fill: #777; -fx-font-style: italic;");
+            caja.getChildren().add(pendiente);
+            centrador.getChildren().add(caja);
+            return centrador;
         }
         
         return centrador;

@@ -129,15 +129,16 @@ public class VentanaRecuperacion
             {
                 Alert alert = new Alert(Alert.AlertType.WARNING, "Debes ingresar una nueva contraseña.");
                 alert.showAndWait();
-                return;
             }
-
-            String nuevaPassHash = Encriptador.hashPassword(nuevaPass);
-            if (baseUsuario.resetearPassword(txtUser.getText().trim(), nuevaPassHash)) 
+            else
             {
-                Alert alert = new Alert(Alert.AlertType.INFORMATION, "¡Éxito! Ya puedes iniciar sesión.");
-                alert.showAndWait();
-                stage.close();
+                String nuevaPassHash = Encriptador.hashPassword(nuevaPass);
+                if (baseUsuario.resetearPassword(txtUser.getText().trim(), nuevaPassHash)) 
+                {
+                    Alert alert = new Alert(Alert.AlertType.INFORMATION, "¡Éxito! Ya puedes iniciar sesión.");
+                    alert.showAndWait();
+                    stage.close();
+                }
             }
         });
 

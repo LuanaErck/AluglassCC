@@ -36,15 +36,16 @@ public class EditarPresupuesto extends Stage
             if(Validadores.estaVacio(desc) || Validadores.estaVacio(totalTxt) || !Validadores.esNumero(totalTxt)) 
             {
                 new Alert(Alert.AlertType.WARNING, "Revise los campos.").show();
-                return;
             }
+            else
+            {
+                double total = Double.parseDouble(totalTxt);
+                new BasePresupuesto().modificarPresupuesto(presupuesto.getIdPresupuesto(), desc, total);
 
-            double total = Double.parseDouble(totalTxt);
-            new BasePresupuesto().modificarPresupuesto(presupuesto.getIdPresupuesto(), desc, total);
-
-            if(onUpdate != null) onUpdate.run();
-            this.close();
-            new Alert(Alert.AlertType.INFORMATION, "Actualizado correctamente.").show();
+                if(onUpdate != null) onUpdate.run();
+                this.close();
+                new Alert(Alert.AlertType.INFORMATION, "Actualizado correctamente.").show();
+            }
         });
 
         root.getChildren().addAll(titulo, new Label("Descripción:"), txtDescripcion, new Label("Monto Total:"), txtTotal, btnGuardar);
