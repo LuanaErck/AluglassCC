@@ -9,6 +9,7 @@ main\ListadoCompras$3.class
 clases\Proveedor.class
 main\RegistrarPagoProveedor.class
 clases\Usuario.class
+main\ListadoProveedores$2.class
 main\ListadoCuentasAtrasadas.class
 main\DetallePresupuesto.class
 clases\Recibo.class
@@ -42,6 +43,7 @@ main\ListaPagos$3.class
 main\ListadoCuentasAtrasadas$2.class
 main\DetalleCuenta$1.class
 main\RegistrarCompra.class
+main\ModificarProveedor.class
 main\ListadoProveedores.class
 base\BaseReporteProveedor.class
 main\ListadoPresupuestos.class

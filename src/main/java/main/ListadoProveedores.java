@@ -30,7 +30,8 @@ public class ListadoProveedores extends VBox
     private final TextField txtBusqueda = new TextField();
     private final ComboBox<String> comboFiltroEstado = new ComboBox<>();
     private final Pagination paginador = new Pagination();
-    private final FilteredList<Proveedor> proveedoresFiltrados;
+    private ObservableList<Proveedor> masterData;
+    private FilteredList<Proveedor> proveedoresFiltrados;
 
     public ListadoProveedores() 
     {
@@ -41,9 +42,8 @@ public class ListadoProveedores extends VBox
         Label lblTitulo = new Label("LISTADO DE PROVEEDORES");
         lblTitulo.getStyleClass().add("titulo-pantalla");
 
-        ObservableList<Proveedor> proveedores = FXCollections.observableArrayList(
-                new BaseProveedor().listarProveedores());
-        proveedoresFiltrados = new FilteredList<>(proveedores, proveedor -> true);
+        masterData = FXCollections.observableArrayList(new BaseProveedor().listarProveedores());
+        proveedoresFiltrados = new FilteredList<>(masterData, proveedor -> true);
 
         configurarFiltros();
         configurarTabla();
@@ -128,7 +128,37 @@ public class ListadoProveedores extends VBox
             }
         });
 
-        tabla.getColumns().addAll(colId, colNombre, colTelefono, colCuit, colCbuAlias, colEstado);
+        TableColumn<Proveedor, Void> colAcciones = new TableColumn<>("Acciones");
+        colAcciones.setCellFactory(param -> new TableCell<>()
+        {
+            private final Button btnEditar = new Button("Editar");
+            {
+                btnEditar.getStyleClass().add("boton-editar-tabla");
+                btnEditar.setOnAction(e -> {
+                    Proveedor proveedorSeleccionado = getTableRow() != null ? getTableRow().getItem() : null;
+                    if (proveedorSeleccionado != null) {
+                        new ModificarProveedor(proveedorSeleccionado, ListadoProveedores.this::recargarTabla).mostrar();
+                    }
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) 
+            {
+                super.updateItem(item, empty);
+                if (empty || getTableRow() == null || getTableRow().getItem() == null) 
+                {
+                    setGraphic(null);
+                } 
+                else 
+                {
+                    setGraphic(btnEditar);
+                    setAlignment(Pos.CENTER);
+                }
+            }
+        });
+
+        tabla.getColumns().addAll(colId, colNombre, colTelefono, colCuit, colCbuAlias, colEstado, colAcciones);
     }
 
     private TableView<Proveedor> crearPagina(int indicePagina) 
@@ -158,5 +188,11 @@ public class ListadoProveedores extends VBox
         paginador.setCurrentPageIndex(0);
         crearPagina(0);
         tabla.refresh();
+    }
+
+    private void recargarTabla() 
+    {
+        masterData.setAll(new BaseProveedor().listarProveedores());
+        actualizarFiltro();
     }
 }

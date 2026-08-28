@@ -220,10 +220,13 @@ public class ListadoClientes extends VBox
             {
                 super.updateItem(item, empty);
                 // Si la celda está vacía o el índice es mayor a los items actuales, quitamos el gráfico
-                if (empty || getIndex() >= getTableView().getItems().size()) {
+                if (empty || getIndex() >= getTableView().getItems().size())
+                {
                     setGraphic(null);
-                } else {
-                    // Si hay datos, nos aseguramos de que el HBox esté presente
+                } 
+                else 
+                {
+                    // Si hay datos, aseguramos de que el HBox esté presente
                     setGraphic(cajaBotones);
                 }
             }

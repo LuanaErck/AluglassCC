@@ -165,4 +165,53 @@ public class BaseProveedor
             return false;
         }
     }
+    
+    public boolean actualizarProveedor(Proveedor proveedor) 
+    {
+        String sql = "UPDATE proveedores SET nombre = ?, cuit = ?, telefono = ?, cbu_alias = ?, estado = ? WHERE id_proveedor = ?";
+
+        try (Connection conn = ConexionSQlite.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql))
+        {
+
+            stmt.setString(1, proveedor.getNombre());
+
+            if (proveedor.getCuit() == null || proveedor.getCuit().trim().isEmpty()) 
+            {
+                stmt.setNull(2, Types.VARCHAR);
+            } 
+            else
+            {
+                stmt.setString(2, proveedor.getCuit().trim());
+            }
+
+            if (proveedor.getTelefono() == null || proveedor.getTelefono().trim().isEmpty()) 
+            {
+                stmt.setNull(3, Types.VARCHAR);
+            } 
+            else
+            {
+                stmt.setString(3, proveedor.getTelefono().trim());
+            }
+
+            if (proveedor.getCbuAlias() == null || proveedor.getCbuAlias().trim().isEmpty()) 
+            {
+                stmt.setNull(4, Types.VARCHAR);
+            } 
+            else 
+            {
+                stmt.setString(4, proveedor.getCbuAlias().trim());
+            }
+
+            stmt.setString(5, proveedor.getEstado());
+            stmt.setInt(6, proveedor.getIdProveedor());
+
+            return stmt.executeUpdate() > 0;
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
 }
