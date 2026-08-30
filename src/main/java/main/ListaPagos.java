@@ -34,7 +34,7 @@ public class ListaPagos extends VBox
         this.setSpacing(15);
         this.setPadding(new Insets(20));
 
-        Label lblTitulo = new Label("HISTORIAL GLOBAL DE PAGOS");
+        Label lblTitulo = new Label("HISTORIAL GLOBAL DE COBROS");
         lblTitulo.getStyleClass().add("titulo-pantalla");
 
         // SECCIÓN DE FILTROS

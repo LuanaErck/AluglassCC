@@ -31,7 +31,7 @@ public class RegistrarPago extends VBox
         this.setSpacing(20);
         this.setPadding(new Insets(20));
 
-        Label lblTitulo = new Label("REGISTRAR NUEVO PAGO");
+        Label lblTitulo = new Label("REGISTRAR NUEVO COBRO");
         lblTitulo.getStyleClass().add("titulo-pantalla");
 
         lblMensaje = new Label("");

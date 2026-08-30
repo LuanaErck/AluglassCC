@@ -114,20 +114,33 @@ public class Manual
             "Este módulo abarca la administración de clientes y su ciclo comercial completo:\n\n" +
             "[IMG:CAPTURA_CLIENTE.png]\n\n" +
             "• **Gestión de Clientes**:\n" +
-            "  - **Añadir cliente**: Formulario para dar de alta nuevos contactos.\n" +
-            "  - **Ver todos**: Padrón completo con opciones de búsqueda, consulta y edición.\n" +
+            "  [IMG:GESTION_CLIENTE.png]\n\n" +
+            "  - **Añadir cliente**: Formulario para dar de alta nuevos contactos de forma directa.\n" +
             "  [IMG:CAPTURA_FORMULARIO_CLIENTE.png]\n\n" +
+            "  - **Ver todos**: Padrón completo con opciones de búsqueda, consulta y edición.\n" +
+            "  [IMG:VER_TODOS_CLIENTE.png]\n\n" +
             "• **Presupuestos de Ventas**:\n" +
+            "  [IMG:PRESUPUESTOS.png]\n\n" +
             "  - **Añadir presupuesto**: Carga de presupuestos para trabajos de carpintería y vidriería.\n" +
-            "  - **Ver todos**: Historial general, filtrado por estados y emisión de comprobantes PDF.\n" +
             "  [IMG:CAPTURA_NUEVO_PRESUPUESTO.png]\n\n" +
+            "  - **Alta Rápida de Cliente**: Al generar un nuevo presupuesto, si el cliente no está registrado, puede presionar el botón **[+] Nuevo Cliente** ubicado junto al selector para registrarlo de forma express sin salir ni perder los datos del comprobante.\n\n" +
+            "  - **Ver todos**: Historial general, edición, filtrado por estados y emisión de comprobantes PDF.\n" +
+            "  [IMG:VER_TODOS_PRESUPUESTO.png]\n\n" +
+            "  - **Advertencia de Eliminación**: Al intentar eliminar un presupuesto existente, el sistema mostrará un cuadro de diálogo de **confirmación de seguridad**. Si el presupuesto ya cuenta con pagos asociados o afectó la cuenta corriente, la acción actualizará o revertirá el saldo correspondiente tras la confirmación explícita del usuario.\n\n" +
             "• **Cobros**:\n" +
+            "  [IMG:COBROS.png]\n\n" +
             "  - **Registrar cobro**: Carga de ingresos vinculados a presupuestos (admite cálculo automático en USD).\n" +
-            "  - **Historial**: Registro histórico de cobros y reimpresión de recibos PDF.\n" +
             "  [IMG:CAPTURA_FORMULARIO_PAGO.png]\n\n" +
+            "  - **Alta Rápida de Cliente y Presupuesto**: Al momento de registrar un nuevo cobro, puede utilizar el botón **[+] Nuevo Cliente**  y **[+] Nuevo Presupuesto** situado al lado del selector de dichos requerimientos para realizar el alta inmediata en una ventana emergente sin abandonar la carga del cobro.\n\n" +
+            "  - **Historial**: Registro histórico de cobros y reimpresión de recibos PDF.\n" +
+            "  [IMG:HISTORIAL_PAGOS.png]\n\n" +
+            "  - **Advertencia al Anular/Eliminar Cobro**: La eliminación o anulación de un pago registrado solicita confirmación obligatoria. Al confirmarse, el monto cobrado volverá a impactar como saldo adeudado en la cuenta corriente del cliente.\n\n" +
             "• **Cuentas Corrientes**:\n" +
+            "[IMG:CC_CLIENTES.png]\n\n" +
             "  - **Listar cuentas**: Consulta global de saldos de todos los clientes.\n" +
-            "  - **Cuentas pendientes**: Filtro rápido de clientes con saldos deudores (morosos).",
+            "[IMG:CAPTURA_LISTADO_GENERAL.png]\n\n" +
+            "  - **Cuentas pendientes**: Filtro rápido de clientes con saldos deudores (morosos).\n" +
+            "[IMG:CAPTURA_LISTADO_MOROSOS.png]\n\n",
             ""
         ));
 
@@ -137,29 +150,41 @@ public class Manual
             "Permite administrar la relación con los proveedores de insumos y materia prima:\n\n" +
             "[IMG:CAPTURA_PROVEEDORES_MENU.png]\n\n" +
             "• **Gestión de Proveedores**:\n" +
+            "  [IMG:GESTION_PROVEEDORES.png]\n\n" +
             "  - **Añadir proveedor**: Alta con Razón Social, CUIT, teléfono y datos bancarios (CBU/Alias).\n" +
-            "  - **Ver todos**: Padrón general para consultar o modificar datos de proveedores.\n" +
             "  [IMG:CAPTURA_FORMULARIO_PROVEEDOR.png]\n\n" +
+            "  - **Ver todos**: Padrón general para consultar o modificar datos de proveedores.\n" +
+            "  [IMG:LISTADO_PROVEEDORES.png]\n\n" +
             "• **Compras**:\n" +
+            "  [IMG:COMPRAS.png]\n\n" +
             "  - **Registrar compra**: Carga de facturas de compra con detalle de ítems e importes.\n" +
-            "  - **Historial de compras**: Consulta cronológica y ficha detallada de cada compra.\n" +
             "  [IMG:CAPTURA_REGISTRAR_COMPRA.png]\n\n" +
+            "  - **Alta Rápida de Proveedor**: Desde la pantalla de registro de compra, puede presionar el botón **[+] Nuevo Proveedor** ubicado al lado del selector para dar de alta un nuevo proveedor en el momento sin interrumpir el comprobante.\n\n" +
+            "  - **Historial de compras**: Consulta cronológica y ficha detallada de cada compra.\n" +
+            "  [IMG:HISTORIAL_COMPRAS.png]\n\n" +
+            "  - **Advertencia al Eliminar Compra**: Si requiere eliminar o cancelar una compra del historial, una ventana de advertencia le solicitará confirmar la acción. Al proceder, se ajustará automáticamente el saldo adeudado en la cuenta corriente del proveedor.\n\n" +
             "• **Pagos**:\n" +
+            "  [IMG:CAPTURA_REGISTRAR_PAGO_PROVEEDOR.png]\n\n" +
             "  - **Registrar pago**: Asignación de pagos a facturas de proveedores pendientes.\n" +
             "  - **Historial de pagos**: Registro histórico de egresos a proveedores.\n" +
-            "  [IMG:CAPTURA_REGISTRAR_PAGO_PROVEEDOR.png]\n\n" +
+            "  [IMG:HISTORIAL_PAGO_PROVEEDOR.png]\n\n" +
+            "  - **Advertencia al Eliminar Pago**: Cualquier anulación de pago a proveedor requiere confirmación mediante alerta. La eliminación restituirá el comprobante a estado pendiente de pago.\n\n" +
             "• **Cuentas Corrientes**:\n" +
-            "  - **Deudas y vencimientos**: Monitoreo de saldos a pagar y fechas límite de vencimiento.",
+            "  [IMG:CC_PROVEEDORES.png]\n\n" +
+            "  - **Deudas y vencimientos**: Monitoreo de saldos a pagar y fechas límite de vencimiento.\n" +
+            "  [IMG:DEUDAS_VENCIMIENTOS.png]\n\n",
             ""
         ));
 
         // SECCIÓN 6: ESTADÍSTICAS
         contenedorSecciones.getChildren().add(crearSeccion(
             "6. Módulo de Estadísticas",
+            "[IMG:CAPTURA_PANEL_ESTADISTICAS.png]\n\n" +
             "Proporciona herramientas visuales para el control financiero y operativo del negocio.\n\n" +
             "• **Panel de Control Visual**:\n" +
-            "Despliega gráficos e indicadores clave (KPIs) sobre ingresos del mes, rendimiento de ventas, facturación histórica, compras a proveedores y alertas de morosidad/vencimientos.\n\n" +
-            "[IMG:CAPTURA_PANEL_ESTADISTICAS.png]",
+            "Despliega gráficos e indicadores clave sobre ingresos del mes, rendimiento de ventas, facturación histórica, compras a proveedores y alertas de morosidad/vencimientos.\n\n" +
+            "[IMG:ESTADISTICAS_CLIENTES.png]" +      
+            "[IMG:ESTADISTICAS_PROVEEDORES.png]",
             ""
         ));
 
@@ -167,9 +192,10 @@ public class Manual
         contenedorSecciones.getChildren().add(crearSeccion(
             "7. Mi Perfil y Seguridad",
             "Gestión de las credenciales de acceso del usuario activo:\n\n" +
+            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]" +
             "• **Editar mis credenciales**:\n" +
             "Permite modificar la contraseña actual y actualizar la pregunta/respuesta de seguridad requerida para la recuperación de la cuenta.\n\n" +
-            "[IMG:CAPTURA_CONFIGURACION_PERFIL.png]",
+            "[IMG:CONFIGURACION_PERFIL.png]",
             ""
         ));
 
@@ -178,7 +204,8 @@ public class Manual
             "8. Manual de Usuario",
             "Herramienta integrada para asistencia en pantalla e instructivo descargable:\n\n" +
             "• **Ver manual de usuario**: Despliega esta pantalla interactiva con navegación por secciones.\n" +
-            "• **Exportar manual**: Genera automáticamente un archivo **Manual_Aluglass.pdf** dentro de la carpeta `manuales` ubicada en el directorio del programa.",
+            "• **Exportar manual**: Genera automáticamente un archivo **Manual_Aluglass.pdf** dentro de la carpeta `manuales` ubicada en el directorio del programa." +
+            "[IMG:MANUAL.png]",
             ""
         ));
 
