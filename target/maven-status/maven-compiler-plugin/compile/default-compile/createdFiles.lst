@@ -42,6 +42,7 @@ base\BaseRecibo.class
 main\ListaPagos$3.class
 utilidades\Respaldo$1.class
 utilidades\Respaldo.class
+main\DetalleCuentaProveedor$2.class
 main\ListadoCuentasAtrasadas$2.class
 main\DetalleCuenta$1.class
 main\RegistrarCompra.class

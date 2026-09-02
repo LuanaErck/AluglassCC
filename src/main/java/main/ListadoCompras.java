@@ -60,7 +60,7 @@ public class ListadoCompras extends VBox
         txtProveedor.getStyleClass().add("input-login");
         txtProveedor.textProperty().addListener((obs, anterior, actual) -> aplicarFiltros());
 
-        comboEstado.getItems().addAll("Todos", "Pendiente", "Pagada", "Cancelada");
+        comboEstado.getItems().addAll("Todos", "Pendiente", "Pagada, Cancelada");
         comboEstado.setValue("Todos");
         comboEstado.setPrefWidth(130);
         comboEstado.valueProperty().addListener((obs, anterior, actual) -> aplicarFiltros());

@@ -26,4 +26,39 @@ public class BaseCuentaProveedor
         }
         return lista;
     }
+    
+    //Para que se actualice automaticamente el saldo y demas info en la ventana despues de anular pago o compra
+    public CuentaProveedor obtenerCuentaPorId(int idProveedor) 
+    {
+        String sql = "SELECT p.id_proveedor, p.nombre, cc.saldo, "
+                   + "MIN(CASE WHEN co.estado='Pendiente' THEN co.fecha_vencimiento END) AS proximo_vencimiento "
+                   + "FROM proveedores p "
+                   + "JOIN cc_proveedores cc ON cc.id_proveedor = p.id_proveedor "
+                   + "LEFT JOIN compras co ON co.id_proveedor = p.id_proveedor "
+                   + "WHERE p.id_proveedor = ? "
+                   + "GROUP BY p.id_proveedor, p.nombre, cc.saldo";
+
+        try (Connection conn = ConexionSQlite.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) 
+        {
+            stmt.setInt(1, idProveedor);
+            try (ResultSet rs = stmt.executeQuery()) 
+            {
+                if (rs.next()) 
+                {
+                    return new CuentaProveedor(
+                        rs.getInt("id_proveedor"),
+                        rs.getString("nombre"),
+                        rs.getDouble("saldo"),
+                        rs.getString("proximo_vencimiento")
+                    );
+                }
+            }
+        } 
+        catch (Exception e) 
+        {
+            e.printStackTrace();
+        }
+        return null;
+    }
 }

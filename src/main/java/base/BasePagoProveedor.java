@@ -14,7 +14,7 @@ public class BasePagoProveedor
     {
         String insertar = "INSERT INTO pagos_proveedores(id_proveedor, id_compra, fecha_pago, importe, forma_pago, observaciones, estado) VALUES (?, ?, ?, ?, ?, ?, 'Activo')";
         String actualizar = "UPDATE cc_proveedores SET saldo = saldo - ? WHERE id_proveedor = ?";
-        String actualizarEstadoCompra = "UPDATE compras SET estado = CASE WHEN COALESCE((SELECT SUM(importe) FROM pagos_proveedores WHERE id_compra = ? AND estado = 'Activo'), 0) >= importe THEN 'Pagada' ELSE 'Pendiente' END WHERE id_compra = ?";
+        String actualizarEstadoCompra = "UPDATE compras SET estado = CASE WHEN COALESCE((SELECT SUM(importe) FROM pagos_proveedores WHERE id_compra = ? AND estado = 'Activo'), 0) >= importe THEN 'Pagada' ELSE 'Pendiente' END WHERE id_compra = ? AND estado != 'Cancelada'";
         try (Connection conn = ConexionSQlite.conectar()) 
         {
             conn.setAutoCommit(false);
@@ -54,7 +54,8 @@ public class BasePagoProveedor
         String sqlPago = "SELECT id_proveedor, id_compra, importe, estado FROM pagos_proveedores WHERE id_pago_prov = ?";
         String sqlAnular = "UPDATE pagos_proveedores SET estado = 'Anulado' WHERE id_pago_prov = ?";
         String sqlRevertirCC = "UPDATE cc_proveedores SET saldo = saldo + ? WHERE id_proveedor = ?";
-        String sqlActualizarCompra = "UPDATE compras SET estado = CASE WHEN COALESCE((SELECT SUM(importe) FROM pagos_proveedores WHERE id_compra = ? AND estado = 'Activo'), 0) >= importe THEN 'Pagada' ELSE 'Pendiente' END WHERE id_compra = ?";
+        // CORRECCIÓN ACA: Se añade "AND estado != 'Cancelada'" para NO reactivar compras anuladas
+        String sqlActualizarCompra = "UPDATE compras SET estado = CASE WHEN COALESCE((SELECT SUM(importe) FROM pagos_proveedores WHERE id_compra = ? AND estado = 'Activo'), 0) >= importe THEN 'Pagada' ELSE 'Pendiente' END WHERE id_compra = ? AND estado != 'Cancelada'";
 
         try (Connection conn = ConexionSQlite.conectar()) 
         {

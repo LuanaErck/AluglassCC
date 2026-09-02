@@ -81,10 +81,14 @@ public class BaseCompra
 
     private Compra crearCompra(ResultSet rs) throws Exception 
     {
-        return new Compra(rs.getInt("id_compra"), rs.getInt("id_proveedor"),
-                rs.getString("nro_factura"), rs.getString("fecha_emision"),
-                rs.getString("detalle"), rs.getDouble("importe"),
-                rs.getString("fecha_vencimiento"), rs.getString("estado"));
+        return new Compra(rs.getInt("id_compra"), 
+                rs.getInt("id_proveedor"),
+                rs.getString("nro_factura"),
+                rs.getString("fecha_emision"),
+                rs.getString("detalle"), 
+                rs.getDouble("importe"),
+                rs.getString("fecha_vencimiento"),
+                rs.getString("estado"));
     }
 
     public boolean registrarCompra(Compra compra) 
@@ -135,6 +139,79 @@ public class BaseCompra
             return true;
         } 
         catch (Exception e) 
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+    
+    public boolean anularCompra(int idCompra) 
+    {
+        String sqlObtener = "SELECT id_proveedor, importe, estado FROM compras WHERE id_compra = ?";
+        String sqlUpdateCompra = "UPDATE compras SET estado = 'Cancelada' WHERE id_compra = ?";
+        String sqlUpdateSaldo = "UPDATE cc_proveedores SET saldo = saldo - ? WHERE id_proveedor = ?";
+
+        try (Connection conn = ConexionSQlite.conectar()) 
+        {
+            conn.setAutoCommit(false);
+
+            int idProveedor = 0;
+            double importe = 0.0;
+            String estadoActual = "";
+
+            try (PreparedStatement stmtGet = conn.prepareStatement(sqlObtener)) 
+            {
+                stmtGet.setInt(1, idCompra);
+                try (ResultSet rs = stmtGet.executeQuery()) 
+                {
+                    if (rs.next()) 
+                    {
+                        idProveedor = rs.getInt("id_proveedor");
+                        importe = rs.getDouble("importe");
+                        estadoActual = rs.getString("estado");
+                    } 
+                    else 
+                    {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            // Si ya está anulada, no hacemos nada
+            if ("Anulada".equalsIgnoreCase(estadoActual)) 
+            {
+                conn.rollback();
+                return false;
+            }
+
+            // 1. Cambiar estado de la compra a Anulada
+            try (PreparedStatement stmtCompra = conn.prepareStatement(sqlUpdateCompra)) 
+            {
+                stmtCompra.setInt(1, idCompra);
+                if (stmtCompra.executeUpdate() != 1)
+                {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            // 2. Restar el importe del saldo de la cuenta corriente
+            try (PreparedStatement stmtSaldo = conn.prepareStatement(sqlUpdateSaldo))
+            {
+                stmtSaldo.setDouble(1, importe);
+                stmtSaldo.setInt(2, idProveedor);
+                if (stmtSaldo.executeUpdate() != 1) 
+                {
+                    conn.rollback();
+                    return false;
+                }
+            }
+
+            conn.commit();
+            return true;
+        } 
+        catch (Exception e)
         {
             e.printStackTrace();
             return false;
