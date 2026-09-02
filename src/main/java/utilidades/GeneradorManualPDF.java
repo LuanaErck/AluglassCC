@@ -22,7 +22,8 @@ public class GeneradorManualPDF
     public static String generar() 
     {
         File carpeta = new File("manuales");
-        if (!carpeta.exists()) {
+        if (!carpeta.exists()) 
+        {
             carpeta.mkdirs();
         }
         String ruta = "manuales/Manual_Aluglass.pdf";

@@ -48,6 +48,81 @@ public class BasePagoProveedor
             return false; 
         }
     }
+
+    public boolean anularPago(int idPagoProv) 
+    {
+        String sqlPago = "SELECT id_proveedor, id_compra, importe, estado FROM pagos_proveedores WHERE id_pago_prov = ?";
+        String sqlAnular = "UPDATE pagos_proveedores SET estado = 'Anulado' WHERE id_pago_prov = ?";
+        String sqlRevertirCC = "UPDATE cc_proveedores SET saldo = saldo + ? WHERE id_proveedor = ?";
+        String sqlActualizarCompra = "UPDATE compras SET estado = CASE WHEN COALESCE((SELECT SUM(importe) FROM pagos_proveedores WHERE id_compra = ? AND estado = 'Activo'), 0) >= importe THEN 'Pagada' ELSE 'Pendiente' END WHERE id_compra = ?";
+
+        try (Connection conn = ConexionSQlite.conectar()) 
+        {
+            conn.setAutoCommit(false);
+
+            int idProveedor = 0;
+            int idCompra = 0;
+            double importe = 0.0;
+            String estado = "";
+
+            try (PreparedStatement stmtSel = conn.prepareStatement(sqlPago)) 
+            {
+                stmtSel.setInt(1, idPagoProv);
+                try (ResultSet rs = stmtSel.executeQuery()) 
+                {
+                    if (rs.next())
+                    {
+                        idProveedor = rs.getInt("id_proveedor");
+                        idCompra = rs.getInt("id_compra");
+                        importe = rs.getDouble("importe");
+                        estado = rs.getString("estado");
+                    } 
+                    else
+                    {
+                        conn.rollback();
+                        return false;
+                    }
+                }
+            }
+
+            if ("Anulado".equalsIgnoreCase(estado))
+            {
+                conn.rollback();
+                return false;
+            }
+
+            try (PreparedStatement stmtAnular = conn.prepareStatement(sqlAnular)) 
+            {
+                stmtAnular.setInt(1, idPagoProv);
+                stmtAnular.executeUpdate();
+            }
+
+            try (PreparedStatement stmtCC = conn.prepareStatement(sqlRevertirCC))
+            {
+                stmtCC.setDouble(1, importe);
+                stmtCC.setInt(2, idProveedor);
+                stmtCC.executeUpdate();
+            }
+
+            if (idCompra > 0) 
+            {
+                try (PreparedStatement stmtCompra = conn.prepareStatement(sqlActualizarCompra)) {
+                    stmtCompra.setInt(1, idCompra);
+                    stmtCompra.setInt(2, idCompra);
+                    stmtCompra.executeUpdate();
+                }
+            }
+
+            conn.commit();
+            return true;
+        } 
+        catch (Exception e)
+        {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public List<PagoProveedor> listarTodos() 
     {
         List<PagoProveedor> lista = new ArrayList<>();
@@ -65,6 +140,7 @@ public class BasePagoProveedor
         }
         return lista;
     }
+
     public List<PagoProveedor> listarPorProveedor(int idProveedor) 
     {
         List<PagoProveedor> lista = new ArrayList<>();
@@ -87,6 +163,7 @@ public class BasePagoProveedor
         }
         return lista;
     }
+
     public List<PagoProveedor> listarPorCompra(int idCompra) 
     {
         List<PagoProveedor> lista = new ArrayList<>();
@@ -106,6 +183,7 @@ public class BasePagoProveedor
         } 
         return lista;
     }
+
     private PagoProveedor crearPago(ResultSet rs) throws Exception 
     { 
         return new PagoProveedor(rs.getInt("id_pago_prov"),

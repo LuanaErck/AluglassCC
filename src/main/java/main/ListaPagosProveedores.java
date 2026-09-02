@@ -18,6 +18,7 @@ public class ListaPagosProveedores extends VBox
     private final TableView<PagoProveedor> tabla = new TableView<>();
     private final TextField buscar = new TextField();
     private final ComboBox<String> forma = new ComboBox<>();
+    private final ComboBox<String> estado = new ComboBox<>(); // NUEVO FILTRO
     private final Pagination paginas = new Pagination();
     private final FilteredList<PagoProveedor> filtrados;
 
@@ -36,7 +37,7 @@ public class ListaPagosProveedores extends VBox
         );
 
         buscar.setPromptText("Buscar por proveedor...");
-        buscar.setPrefWidth(230);
+        buscar.setPrefWidth(200);
         buscar.getStyleClass().add("input-login");
         buscar.textProperty().addListener((o, a, n) -> filtrar());
 
@@ -44,20 +45,28 @@ public class ListaPagosProveedores extends VBox
         forma.setValue("Todas");
         forma.valueProperty().addListener((o, a, n) -> filtrar());
 
+        // CONFIGURACIÓN DEL COMBOBOX DE ESTADO
+        estado.getItems().addAll("Todos", "ACTIVO", "ANULADO");
+        estado.setValue("Todos");
+        estado.valueProperty().addListener((o, a, n) -> filtrar());
+
         Button limpiar = new Button("Limpiar");
         limpiar.getStyleClass().add("boton-editar-tabla");
         limpiar.setOnAction(e -> 
         {
             buscar.clear();
             forma.setValue("Todas");
+            estado.setValue("Todos");
         });
 
         HBox filtros = new HBox(
-            15, 
+            12, 
             new Label("Proveedor:"), 
             buscar, 
             new Label("Forma:"), 
             forma, 
+            new Label("Estado:"), 
+            estado, 
             limpiar
         );
         filtros.setAlignment(Pos.CENTER_LEFT);
@@ -99,10 +108,30 @@ public class ListaPagosProveedores extends VBox
         TableColumn<PagoProveedor, String> f = new TableColumn<>("Forma");
         f.setCellValueFactory(new PropertyValueFactory<>("formaPago"));
 
-        TableColumn<PagoProveedor, String> obs = new TableColumn<>("Observaciones");
-        obs.setCellValueFactory(new PropertyValueFactory<>("observaciones"));
+        // COLUMNA DE ESTADO EN REEMPLAZO DE OBSERVACIONES
+        TableColumn<PagoProveedor, String> colEstado = new TableColumn<>("Estado");
+        colEstado.setCellValueFactory(new PropertyValueFactory<>("estado"));
+        colEstado.setCellFactory(c -> new TableCell<>() 
+        {
+            @Override
+            protected void updateItem(String item, boolean empty) 
+            {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    setText(item);
+                    if ("ANULADO".equalsIgnoreCase(item)) {
+                        setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;"); // Rojo para Anulado
+                    } else {
+                        setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;"); // Verde para Activo
+                    }
+                }
+            }
+        });
 
-        tabla.getColumns().addAll(id, prov, fecha, imp, f, obs);
+        tabla.getColumns().addAll(id, prov, fecha, imp, f, colEstado);
     }
 
     private TableView<PagoProveedor> pagina(int i) 
@@ -120,11 +149,13 @@ public class ListaPagosProveedores extends VBox
     private void filtrar() 
     {
         String texto = buscar.getText().trim().toLowerCase();
-        String tipo = forma.getValue();
+        String tipoForma = forma.getValue();
+        String tipoEstado = estado.getValue();
         
         filtrados.setPredicate(p -> 
-            (texto.isEmpty() || p.getNombreProveedor().toLowerCase().contains(texto)) && 
-            ("Todas".equals(tipo) || p.getFormaPago().equals(tipo))
+            (texto.isEmpty() || (p.getNombreProveedor() != null && p.getNombreProveedor().toLowerCase().contains(texto))) && 
+            ("Todas".equals(tipoForma) || (p.getFormaPago() != null && p.getFormaPago().equalsIgnoreCase(tipoForma))) &&
+            ("Todos".equals(tipoEstado) || (p.getEstado() != null && p.getEstado().equalsIgnoreCase(tipoEstado)))
         );
         
         actualizar();

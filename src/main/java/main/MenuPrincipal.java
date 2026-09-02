@@ -63,7 +63,31 @@ public class MenuPrincipal
         btnSalir.setId("boton-salir");
         btnSalir.setMaxWidth(Double.MAX_VALUE);
         btnSalir.setMinHeight(50);
-        btnSalir.setOnAction(e -> new Login().start(stage));
+
+        btnSalir.setOnAction(e -> 
+        {
+            // 1. Iniciar el respaldo en segundo plano antes de volver al Login
+            new Thread(() -> 
+            {
+                // Reemplazá "E" por la letra que tenga asignada el pendrive en la PC
+                boolean exito = utilidades.Respaldo.respaldarTodoEnPendrive("D");
+
+                if (!exito)
+                {
+                    System.out.println("[Respaldo] No se pudo realizar el respaldo automático al cerrar sesión (Pendrive no detectado).");
+                }
+            }).start();
+
+            // 2. Volver a la pantalla de Login
+            try 
+            {
+                new Login().start(stage);
+            } 
+            catch (Exception ex) 
+            {
+                ex.printStackTrace();
+            }
+        });
 
         VBox bottomContainer = new VBox(btnSalir);
         bottomContainer.setPadding(new Insets(20));

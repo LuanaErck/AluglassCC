@@ -7,6 +7,7 @@ import clases.CuentaProveedor;
 import clases.PagoProveedor;
 import java.text.NumberFormat;
 import java.util.Locale;
+import java.util.Optional;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -15,6 +16,7 @@ import javafx.scene.layout.*;
 
 public class DetalleCuentaProveedor extends VBox 
 {
+    private final BasePagoProveedor basePago = new BasePagoProveedor();
 
     public DetalleCuentaProveedor(BorderPane root, CuentaProveedor cuenta) 
     {
@@ -69,8 +71,52 @@ public class DetalleCuentaProveedor extends VBox
         TableColumn<PagoProveedor, String> forma = new TableColumn<>("Forma");
         forma.setCellValueFactory(new PropertyValueFactory<>("formaPago"));
 
-        pagos.getColumns().addAll(fp, ip, forma);
-        pagos.setItems(FXCollections.observableArrayList(new BasePagoProveedor().listarPorProveedor(cuenta.getIdProveedor())));
+        TableColumn<PagoProveedor, String> estadoCol = new TableColumn<>("Estado");
+        estadoCol.setCellValueFactory(new PropertyValueFactory<>("estado"));
+
+        // Columna de Acciones: Anular Pago
+        TableColumn<PagoProveedor, Void> colAcciones = new TableColumn<>("Acciones");
+        colAcciones.setCellFactory(param -> new TableCell<>()
+        {
+            private final Button btnAnular = new Button("Anular Pago");
+
+            {
+                btnAnular.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+                btnAnular.setOnAction(e ->
+                {
+                    PagoProveedor pago = getTableView().getItems().get(getIndex());
+                    confirmarYAnular(pago, root, cuenta);
+                });
+            }
+
+            @Override
+            protected void updateItem(Void item, boolean empty) 
+            {
+                super.updateItem(item, empty);
+                if (empty)
+                {
+                    setGraphic(null);
+                }
+                else 
+                {
+                    PagoProveedor pago = getTableView().getItems().get(getIndex());
+                    if ("Anulado".equalsIgnoreCase(pago.getEstado())) 
+                    {
+                        btnAnular.setDisable(true);
+                        btnAnular.setStyle("-fx-background-color: #bdc3c7; -fx-text-fill: white;");
+                    } 
+                    else
+                    {
+                        btnAnular.setDisable(false);
+                        btnAnular.setStyle("-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;");
+                    }
+                    setGraphic(btnAnular);
+                }
+            }
+        });
+
+        pagos.getColumns().addAll(fp, ip, forma, estadoCol, colAcciones);
+        pagos.setItems(FXCollections.observableArrayList(basePago.listarPorProveedor(cuenta.getIdProveedor())));
         pagos.setPrefHeight(180);
 
         // Botón Volver
@@ -79,5 +125,29 @@ public class DetalleCuentaProveedor extends VBox
         volver.setOnAction(e -> root.setCenter(new ListadoCuentasProveedores(root)));
 
         getChildren().addAll(titulo, new Separator(), info, comprasTitulo, compras, pagosTitulo, pagos, volver);
+    }
+
+    private void confirmarYAnular(PagoProveedor pago, BorderPane root, CuentaProveedor cuenta) 
+    {
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar Anulación");
+        confirm.setHeaderText("¿Está seguro de anular el pago #" + pago.getIdPagoProveedor() + "?");
+        confirm.setContentText("Esta acción revertirá el importe de $" + pago.getImporte() + " a la cuenta corriente del proveedor.");
+
+        Optional<ButtonType> result = confirm.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) 
+        {
+            boolean exito = basePago.anularPago(pago.getIdPagoProveedor());
+            if (exito) 
+            {
+                // Recargar la pantalla para refrescar el saldo y el estado de la tabla
+                root.setCenter(new DetalleCuentaProveedor(root, cuenta));
+            } 
+            else 
+            {
+                Alert err = new Alert(Alert.AlertType.ERROR, "No se pudo anular el pago.", ButtonType.OK);
+                err.showAndWait();
+            }
+        }
     }
 }

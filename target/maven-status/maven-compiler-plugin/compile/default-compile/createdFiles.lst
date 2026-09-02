@@ -40,6 +40,8 @@ base\BaseCuenta.class
 main\RegistrarPago.class
 base\BaseRecibo.class
 main\ListaPagos$3.class
+utilidades\Respaldo$1.class
+utilidades\Respaldo.class
 main\ListadoCuentasAtrasadas$2.class
 main\DetalleCuenta$1.class
 main\RegistrarCompra.class
@@ -56,6 +58,7 @@ main\ListaPagosProveedores$1.class
 base\BasePago.class
 base\BaseCuentaProveedor.class
 main\DetalleCuentaProveedor.class
+main\DetalleCuentaProveedor$1.class
 main\VentanaRecuperacion.class
 main\ListadoCuentasProveedores$2.class
 main\MenuPrincipal.class
@@ -81,6 +84,7 @@ base\BaseUsuario.class
 main\ListadoCompras$2.class
 clases\CuentaCorriente.class
 main\ListadoProveedores$1.class
+main\ListaPagosProveedores$2.class
 clases\Compra.class
 clases\CuentaProveedor.class
 main\Login.class
