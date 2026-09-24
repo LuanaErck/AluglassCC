@@ -23,14 +23,45 @@ public class PagoProveedor {
         this.estado = estado;
     }
 
-    public int getIdPagoProveedor() { return idPagoProveedor; }
-    public int getIdProveedor() { return idProveedor; }
-    public int getIdCompra() { return idCompra; }
-    public String getFechaPago() { return fechaPago; }
-    public double getImporte() { return importe; }
-    public String getFormaPago() { return formaPago; }
-    public String getObservaciones() { return observaciones; }
-    public String getEstado() { return estado; }
-    public String getNombreProveedor() { return nombreProveedor; }
-    public void setNombreProveedor(String nombreProveedor) { this.nombreProveedor = nombreProveedor; }
+    public int getIdPagoProveedor() 
+    { 
+        return idPagoProveedor; 
+    }
+    public int getIdProveedor() 
+    { 
+        return idProveedor; 
+    }
+    public int getIdCompra() 
+    { 
+        return idCompra; 
+    }
+    public String getFechaPago() 
+    { 
+        return fechaPago; 
+    }
+    public double getImporte() 
+    {
+        return importe; 
+    }
+    public String getFormaPago() 
+    { 
+        return formaPago; 
+    }
+    public String getObservaciones() 
+    {
+        return observaciones; 
+    }
+    public String getEstado() 
+    { 
+        return estado; 
+    }
+    public String getNombreProveedor() 
+    { 
+        return nombreProveedor;
+    }
+    
+    public void setNombreProveedor(String nombreProveedor) 
+    { 
+        this.nombreProveedor = nombreProveedor; 
+    }
 }

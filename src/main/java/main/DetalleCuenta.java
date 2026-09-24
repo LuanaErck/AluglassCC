@@ -1,6 +1,8 @@
 package main;
 
 import base.BaseCuenta;
+import base.BaseCliente;
+import clases.Cliente;
 import base.BasePago;
 import base.BasePresupuesto;
 import base.BaseRecibo;
@@ -49,7 +51,14 @@ public class DetalleCuenta extends VBox
 
         BaseCuenta baseCuenta = new BaseCuenta();
         double saldo = baseCuenta.obtenerSaldoCliente(idCliente);
-        Label lblSaldo = new Label("SALDO TOTAL: " + formato.format(saldo));
+        
+        // Obtener Nombre del Cliente usando el idCliente
+        BaseCliente baseCliente = new BaseCliente();
+        Cliente cliente = baseCliente.obtenerClientePorId(idCliente);
+        String nombreCliente = (cliente != null) ? cliente.getNombre() : "Cliente Desconocido";
+
+        // Construcción del Label
+        Label lblSaldo = new Label("CLIENTE: " + nombreCliente + " | SALDO TOTAL: " + formato.format(saldo));
         lblSaldo.setStyle("-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #800000;");
 
         HBox cabecera = new HBox(20, btnVolver, lblSaldo);
@@ -111,8 +120,14 @@ public class DetalleCuenta extends VBox
                     String ruta = new BaseRecibo().obtenerRutaPdfPorPago(pago.getIdPago());
                     if (ruta != null)
                     {
-                        try { java.awt.Desktop.getDesktop().open(new java.io.File(ruta)); }
-                        catch (Exception ex) { ex.printStackTrace(); }
+                        try 
+                        { 
+                            java.awt.Desktop.getDesktop().open(new java.io.File(ruta)); 
+                        }
+                        catch (Exception ex) 
+                        { 
+                            ex.printStackTrace(); 
+                        }
                     } 
                     else 
                     {

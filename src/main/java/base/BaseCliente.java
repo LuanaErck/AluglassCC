@@ -205,4 +205,35 @@ public class BaseCliente
             return false;
         }
     }
+    
+    // Obtiene un cliente específico a partir de su ID
+    public Cliente obtenerClientePorId(int idCliente) 
+    {
+        String sql = "SELECT * FROM clientes WHERE id_cliente = ?";
+
+        try (Connection conn = ConexionSQlite.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) 
+        {
+            stmt.setInt(1, idCliente);
+            try (ResultSet rs = stmt.executeQuery()) 
+            {
+                if (rs.next()) 
+                {
+                    return new Cliente(
+                            rs.getInt("id_cliente"),
+                            rs.getString("nombre"),
+                            rs.getString("telefono"),
+                            rs.getString("estado"),
+                            rs.getString("cuit")
+                    );
+                }
+            }
+        } 
+        catch (Exception e) 
+        {
+            System.err.println("Error al obtener cliente por ID: " + e.getMessage());
+        }
+
+        return null; // Si no lo encuentra o falla
+    }
 }

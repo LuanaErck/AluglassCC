@@ -45,6 +45,10 @@ public class DetalleCuentaProveedor extends VBox
         TableView<Compra> compras = new TableView<>();
         compras.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 
+        // Columna de ID/Número de Compra al principio
+        TableColumn<Compra, Integer> idCompraCol = new TableColumn<>("N° Compra");
+        idCompraCol.setCellValueFactory(new PropertyValueFactory<>("idCompra"));
+
         TableColumn<Compra, String> fc = new TableColumn<>("Fecha");
         fc.setCellValueFactory(new PropertyValueFactory<>("fecha"));
 
@@ -83,7 +87,6 @@ public class DetalleCuentaProveedor extends VBox
                 {
                     Compra compra = getTableView().getItems().get(getIndex());
                     
-                    // Evaluamos si el estado es Cancelada o Anulada
                     if ("Cancelada".equalsIgnoreCase(compra.getEstado()) || "Anulada".equalsIgnoreCase(compra.getEstado())) 
                     {
                         btnAnularCompra.setDisable(true);
@@ -99,7 +102,8 @@ public class DetalleCuentaProveedor extends VBox
             }
         });
 
-        compras.getColumns().addAll(fc, det, ic, estadoCompraCol, colAccionesCompras);
+        // Agregamos idCompraCol al principio
+        compras.getColumns().addAll(idCompraCol, fc, det, ic, estadoCompraCol, colAccionesCompras);
         compras.setItems(FXCollections.observableArrayList(baseCompra.listarComprasPorProveedor(cuenta.getIdProveedor())));
         compras.setPrefHeight(180);
 
@@ -109,6 +113,10 @@ public class DetalleCuentaProveedor extends VBox
 
         TableView<PagoProveedor> pagos = new TableView<>();
         pagos.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+
+        // Columna de Referencia a N° Compra
+        TableColumn<PagoProveedor, Integer> idCompraPagoCol = new TableColumn<>("N° Compra");
+        idCompraPagoCol.setCellValueFactory(new PropertyValueFactory<>("idCompra"));
 
         TableColumn<PagoProveedor, String> fp = new TableColumn<>("Fecha");
         fp.setCellValueFactory(new PropertyValueFactory<>("fechaPago"));
@@ -162,7 +170,8 @@ public class DetalleCuentaProveedor extends VBox
             }
         });
 
-        pagos.getColumns().addAll(fp, ip, forma, estadoCol, colAccionesPagos);
+        // Agregamos idCompraPagoCol a la tabla de pagos
+        pagos.getColumns().addAll(idCompraPagoCol, fp, ip, forma, estadoCol, colAccionesPagos);
         pagos.setItems(FXCollections.observableArrayList(basePago.listarPorProveedor(cuenta.getIdProveedor())));
         pagos.setPrefHeight(180);
 
