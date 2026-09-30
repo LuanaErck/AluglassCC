@@ -9,6 +9,7 @@ import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import clases.ResumenMensual;
 
 public class BasePago 
 {
@@ -370,6 +371,22 @@ public class BasePago
         {
             return 0.0; 
         }
+    }
+
+    public List<ResumenMensual> obtenerIngresosMensuales() 
+    {
+        List<ResumenMensual> lista = new ArrayList<>();
+        String sql = "SELECT strftime('%m/%Y', fecha_pago) AS periodo, SUM(importe_pesos) AS total "
+                + "FROM pagos WHERE estado = 'Activo' GROUP BY strftime('%Y-%m', fecha_pago) ORDER BY strftime('%Y-%m', fecha_pago)";
+        try (Connection conn = ConexionSQlite.conectar(); Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql)) 
+        {
+            while (rs.next()) lista.add(new ResumenMensual(rs.getString("periodo"), rs.getDouble("total")));
+        } 
+        catch (Exception e) 
+        { 
+            e.printStackTrace();
+        }
+        return lista;
     }
 
     public List<DeudorReporte> obtenerClientesMorosos() 

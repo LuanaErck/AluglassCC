@@ -66,7 +66,7 @@ public class BaseCompra
     public List<Compra> listarComprasPorProveedor(int idProveedor) 
     {
         List<Compra> compras = new ArrayList<>();
-        String sql = "SELECT * FROM compras WHERE id_proveedor=? ORDER BY fecha_emision DESC,id_compra DESC";
+        String sql = "SELECT * FROM compras WHERE id_proveedor=? AND estado='Pendiente' ORDER BY fecha_emision DESC,id_compra DESC";
         try(Connection conn=ConexionSQlite.conectar(); 
                 PreparedStatement stmt=conn.prepareStatement(sql)) 
         {

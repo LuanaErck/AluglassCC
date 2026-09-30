@@ -18,7 +18,7 @@ public class ListaPagosProveedores extends VBox
     private final TableView<PagoProveedor> tabla = new TableView<>();
     private final TextField buscar = new TextField();
     private final ComboBox<String> forma = new ComboBox<>();
-    private final ComboBox<String> estado = new ComboBox<>(); // NUEVO FILTRO
+    private final ComboBox<String> estado = new ComboBox<>(); 
     private final Pagination paginas = new Pagination();
     private final FilteredList<PagoProveedor> filtrados;
 
@@ -122,9 +122,12 @@ public class ListaPagosProveedores extends VBox
                     setStyle("");
                 } else {
                     setText(item);
-                    if ("ANULADO".equalsIgnoreCase(item)) {
+                    if ("ANULADO".equalsIgnoreCase(item)) 
+                    {
                         setStyle("-fx-text-fill: #e74c3c; -fx-font-weight: bold;"); // Rojo para Anulado
-                    } else {
+                    } 
+                    else
+                    {
                         setStyle("-fx-text-fill: #27ae60; -fx-font-weight: bold;"); // Verde para Activo
                     }
                 }

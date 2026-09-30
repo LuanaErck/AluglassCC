@@ -1,6 +1,7 @@
 package base;
 
 import clases.DeudorReporte;
+import clases.ResumenMensual;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -25,6 +26,22 @@ public class BaseReporteProveedor
     public double deudaTotal() 
     {
         return consultarTotal("SELECT COALESCE(SUM(CASE WHEN saldo > 0 THEN saldo ELSE 0 END), 0) FROM cc_proveedores");
+    }
+
+    public List<ResumenMensual> obtenerComprasMensuales() 
+    {
+        List<ResumenMensual> lista = new ArrayList<>();
+        String sql = "SELECT strftime('%m/%Y', fecha_emision) AS periodo, SUM(importe) AS total "
+                + "FROM compras GROUP BY strftime('%Y-%m', fecha_emision) ORDER BY strftime('%Y-%m', fecha_emision)";
+        try (Connection c = ConexionSQlite.conectar(); Statement s = c.createStatement(); ResultSet r = s.executeQuery(sql)) 
+        {
+            while (r.next()) lista.add(new ResumenMensual(r.getString("periodo"), r.getDouble("total")));
+        } 
+        catch (Exception e) 
+        { 
+            e.printStackTrace(); 
+        }
+        return lista;
     }
 
     private double consultarTotal(String sql) 

@@ -3,11 +3,14 @@ package main;
 import base.BasePago;
 import base.BaseReporteProveedor;
 import clases.DeudorReporte;
+import clases.ResumenMensual;
 import java.util.List;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import java.text.NumberFormat;
+import java.util.Locale;
 import javafx.scene.layout.*;
 
 public class Reportes 
@@ -23,6 +26,7 @@ public class Reportes
         titulo.getStyleClass().add("titulo-pantalla");
 
         TabPane pestañas = new TabPane();
+        pestañas.getStyleClass().add("panel-control-tabs");
         
         Tab clientes = new Tab("Clientes", crearVistaClientes());
         Tab proveedores = new Tab("Proveedores", crearVistaProveedores());
@@ -58,6 +62,10 @@ public class Reportes
 
         filaTotales.getChildren().addAll(cardIngresoMes, cardIngresoTotal, cardDeudaTotal);
 
+        Label lblHistorico = new Label("Ingresos mensuales");
+        lblHistorico.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #333;");
+        VBox tablaIngresos = crearTablaMensual("Ingresos del mes", basePago.obtenerIngresosMensuales());
+
         // SECCIÓN 2: TABLA DE MOROSIDAD 
         VBox seccionTabla = new VBox(15);
         VBox.setVgrow(seccionTabla, Priority.ALWAYS); // Hace que la tabla use el espacio sobrante
@@ -87,15 +95,18 @@ public class Reportes
 
         // Carga de datos
         List<DeudorReporte> morosos = basePago.obtenerClientesMorosos();
-        tablaMora.getItems().addAll(morosos);
-
-        // Mensaje si no hay morosos
         tablaMora.setPlaceholder(new Label("No hay deudas con más de 30 días de atraso. ¡Todo al día!"));
-
-        seccionTabla.getChildren().addAll(lblTabla, tablaMora);
+        seccionTabla.getChildren().addAll(lblTabla, crearSeccionPaginada(tablaMora, morosos));
 
         // Agregamos solo las tarjetas y la tabla
-        root.getChildren().addAll(filaTotales, seccionTabla);
+        VBox resumen = new VBox(18, filaTotales, lblHistorico, tablaIngresos);
+        resumen.setPadding(new Insets(15));
+        VBox alertas = new VBox(15, lblTabla, crearSeccionPaginada(tablaMora, morosos));
+        alertas.setPadding(new Insets(15));
+        VBox.setVgrow(alertas.getChildren().get(1), Priority.ALWAYS);
+        TabPane secciones = crearPestanasInternas("Recaudaciones", resumen, "Morosos", alertas);
+        VBox.setVgrow(secciones, Priority.ALWAYS);
+        root.getChildren().add(secciones);
 
         return root;
     }
@@ -115,16 +126,73 @@ public class Reportes
                 crearTarjeta("DEUDA CON PROVEEDORES", "$ " + String.format("%,.2f", base.deudaTotal()), "#ff9800")
         );
 
+        Label historico = new Label("Compras mensuales");
+        historico.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #333;");
+        VBox tablaCompras = crearTablaMensual("Compras del mes", base.obtenerComprasMensuales());
+
         Label titulo = new Label("Cuentas a pagar y vencimientos");
         titulo.setStyle("-fx-font-weight: bold; -fx-font-size: 18px; -fx-text-fill: #333;");
 
         TableView<DeudorReporte> tabla = crearTablaAlertas("Proveedor");
-        tabla.getItems().addAll(base.obtenerProveedoresConDeuda());
         tabla.setPlaceholder(new Label("No hay deudas pendientes con proveedores."));
-        VBox.setVgrow(tabla, Priority.ALWAYS);
-
-        root.getChildren().addAll(tarjetas, titulo, tabla);
+        VBox resumen = new VBox(18, tarjetas, historico, tablaCompras);
+        resumen.setPadding(new Insets(15));
+        VBox cuentas = new VBox(15, titulo, crearSeccionPaginada(tabla, base.obtenerProveedoresConDeuda()));
+        cuentas.setPadding(new Insets(15));
+        VBox.setVgrow(cuentas.getChildren().get(1), Priority.ALWAYS);
+        TabPane secciones = crearPestanasInternas("Compras", resumen, "Cuentas y vencimientos", cuentas);
+        VBox.setVgrow(secciones, Priority.ALWAYS);
+        root.getChildren().add(secciones);
         return root;
+    }
+
+    private TabPane crearPestanasInternas(String tituloPrimera, VBox primera, String tituloSegunda, VBox segunda) {
+        Tab primeraPestana = new Tab(tituloPrimera, primera);
+        Tab segundaPestana = new Tab(tituloSegunda, segunda);
+        primeraPestana.setClosable(false);
+        segundaPestana.setClosable(false);
+        TabPane pestañas = new TabPane(primeraPestana, segundaPestana);
+        pestañas.getStyleClass().add("panel-control-subtabs");
+        return pestañas;
+    }
+
+    private VBox crearTablaMensual(String titulo, List<ResumenMensual> resumenes) {
+        TableView<ResumenMensual> tabla = new TableView<>();
+        tabla.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        TableColumn<ResumenMensual, String> periodo = new TableColumn<>("Mes / Año");
+        periodo.setCellValueFactory(new PropertyValueFactory<>("periodo"));
+        TableColumn<ResumenMensual, Double> total = new TableColumn<>(titulo + " (ARS)");
+        total.setCellValueFactory(new PropertyValueFactory<>("total"));
+        total.setCellFactory(columna -> new TableCell<>() {
+            private final NumberFormat formato = NumberFormat.getCurrencyInstance(new Locale("es", "AR"));
+            @Override protected void updateItem(Double valor, boolean empty) {
+                super.updateItem(valor, empty);
+                setText(empty || valor == null ? null : formato.format(valor));
+            }
+        });
+        tabla.getColumns().addAll(periodo, total);
+        tabla.setPlaceholder(new Label("Aún no hay movimientos mensuales registrados."));
+        return crearSeccionPaginada(tabla, resumenes);
+    }
+
+    private <T> VBox crearSeccionPaginada(TableView<T> tabla, List<T> datos) {
+        final int filasPorPagina = 8;
+        tabla.setPrefHeight(280);
+        tabla.setMinHeight(280);
+        Pagination paginador = new Pagination(Math.max(1, (int) Math.ceil((double) datos.size() / filasPorPagina)), 0);
+        paginador.setMaxPageIndicatorCount(7);
+        paginador.setPageFactory(indice -> {
+            int desde = indice * filasPorPagina;
+            int hasta = Math.min(desde + filasPorPagina, datos.size());
+            tabla.setItems(javafx.collections.FXCollections.observableArrayList(
+                    desde < datos.size() ? datos.subList(desde, hasta) : java.util.Collections.emptyList()));
+            return tabla;
+        });
+        VBox seccion = new VBox(6, paginador);
+        seccion.setPrefHeight(325);
+        seccion.setMinHeight(325);
+        VBox.setVgrow(paginador, Priority.ALWAYS);
+        return seccion;
     }
 
     private TableView<DeudorReporte> crearTablaAlertas(String encabezado) 

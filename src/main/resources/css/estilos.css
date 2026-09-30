@@ -388,10 +388,11 @@
 .input-perfil 
 {
     /* Para que no vaya de punta a punta */
-    -fx-pref-width: 350px;
-    -fx-max-width: 350px;
+    -fx-pref-width: 460px;
+    -fx-max-width: 460px;
     /* Para que sea más alto */
-    -fx-pref-height: 40px;
+    -fx-pref-height: 52px;
+    -fx-font-size: 18px;
     /* Aleja el texto de los bordes del input */
     -fx-padding: 0 15 0 15;
     -fx-background-radius: 7;
@@ -402,7 +403,7 @@
 /* Un poco más de aire a los labels para que no estén pegados */
 .label-perfil 
 {
-    -fx-font-size: 14px;
+    -fx-font-size: 18px;
     -fx-text-fill: #555;
     -fx-font-weight: bold;
     -fx-margin: 0 0 5 0;
@@ -414,12 +415,67 @@
     -fx-text-fill: white;
     -fx-font-weight: bold;
     -fx-padding: 10 20;
+    -fx-font-size: 16px;
     -fx-cursor: hand;
 }
 
 .boton-guardar-perfil:hover 
 {
     -fx-background-color: #1976D2;
+}
+
+/* =========================================================
+   PANEL DE CONTROL VISUAL
+   ========================================================= */
+.panel-control-tabs > .tab-header-area .tab-header-background,
+.panel-control-subtabs > .tab-header-area .tab-header-background
+{
+    -fx-background-color: transparent;
+}
+
+.panel-control-tabs > .tab-header-area .tab
+{
+    -fx-background-color: #e8edf3;
+    -fx-background-radius: 9 9 0 0;
+    -fx-padding: 9 24 9 24;
+    -fx-font-size: 15px;
+    -fx-font-weight: bold;
+}
+
+.panel-control-tabs > .tab-header-area .tab:selected
+{
+    -fx-background-color: #2196F3;
+}
+
+.panel-control-tabs > .tab-header-area .tab:selected .tab-label
+{
+    -fx-text-fill: white;
+}
+
+.panel-control-tabs > .tab-header-area .tab .tab-label
+{
+    -fx-text-fill: #3c4a57;
+}
+
+.panel-control-subtabs > .tab-header-area .tab
+{
+    -fx-background-color: #f1f3f5;
+    -fx-background-radius: 7 7 0 0;
+    -fx-padding: 7 18 7 18;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+.panel-control-subtabs > .tab-header-area .tab:selected
+{
+    -fx-background-color: #ffffff;
+    -fx-border-color: #2196F3;
+    -fx-border-width: 3 0 0 0;
+}
+
+.panel-control-subtabs > .tab-header-area .tab:selected .tab-label
+{
+    -fx-text-fill: #1976D2;
 }
 
 /* =========================================================

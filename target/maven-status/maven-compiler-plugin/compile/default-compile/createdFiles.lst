@@ -11,6 +11,7 @@ main\RegistrarPagoProveedor.class
 clases\Usuario.class
 main\ListadoProveedores$2.class
 main\ListadoCuentasAtrasadas.class
+main\Reportes$1.class
 main\DetallePresupuesto.class
 clases\Recibo.class
 main\DetallePresupuesto$2.class
@@ -36,6 +37,7 @@ main\AgregarCliente.class
 utilidades\Validadores.class
 main\DetalleCuenta$2.class
 clases\DeudorReporte.class
+clases\ResumenMensual.class
 base\BaseCuenta.class
 main\RegistrarPago.class
 base\BaseRecibo.class
